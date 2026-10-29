@@ -1,6 +1,97 @@
-/* Domina el DOMINA · Script compartido */
+/* Domina el DOMINA · Script compartido
+   Se carga en <head> sin defer: el tema se aplica antes de pintar la página
+   y todo lo demás espera a DOMContentLoaded. */
 (function () {
   "use strict";
+
+  var root = document.documentElement;
+  var THEME_KEY = "domina-tema";
+
+  root.classList.add("js");
+
+  /* ---------- Tema claro / oscuro (antes de pintar) ---------- */
+  function storedTheme() {
+    try {
+      var t = window.localStorage.getItem(THEME_KEY);
+      return t === "dark" || t === "light" ? t : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  var systemDark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+
+  function systemTheme() {
+    return systemDark && systemDark.matches ? "dark" : "light";
+  }
+
+  root.setAttribute("data-theme", storedTheme() || systemTheme());
+
+  /* ---------- Animaciones: solo si el sistema no pide reducir movimiento ---------- */
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var canAnimate = !reduceMotion && "IntersectionObserver" in window;
+  if (canAnimate) root.classList.add("js-motion");
+
+  function initTheme() {
+    var btn = document.querySelector(".theme-toggle");
+    if (!btn) return;
+
+    function updateLabel() {
+      var dark = root.getAttribute("data-theme") === "dark";
+      btn.setAttribute("aria-label", dark ? "Cambiar a modo claro" : "Cambiar a modo oscuro");
+    }
+
+    btn.addEventListener("click", function () {
+      var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try {
+        window.localStorage.setItem(THEME_KEY, next);
+      } catch (e) {
+        /* Sin localStorage el cambio dura solo esta visita. */
+      }
+      updateLabel();
+    });
+
+    // Mientras no haya elección guardada, sigue los cambios del sistema.
+    if (systemDark && systemDark.addEventListener) {
+      systemDark.addEventListener("change", function () {
+        if (storedTheme()) return;
+        root.setAttribute("data-theme", systemTheme());
+        updateLabel();
+      });
+    }
+
+    updateLabel();
+  }
+
+  function initReveal() {
+    if (!canAnimate) return;
+    var targets = document.querySelectorAll(".card, .pager");
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: "0px 0px -40px 0px", threshold: 0.05 });
+
+    Array.prototype.forEach.call(targets, function (el) {
+      el.classList.add("reveal");
+      observer.observe(el);
+    });
+  }
+
+  // Ejecuta cada módulo por separado: un error en uno no detiene a los demás
+  // y, si falla el de animaciones, el contenido se muestra completo.
+  function safe(fn) {
+    try {
+      fn();
+    } catch (e) {
+      if (fn === initReveal) root.classList.remove("js-motion");
+      if (window.console) window.console.error(e);
+    }
+  }
 
   /* ---------- Menú desplegable en celular ---------- */
   function initNav() {
@@ -28,7 +119,7 @@
       if (!nav.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
     });
 
-    window.matchMedia("(min-width: 1120px)").addEventListener("change", function (mq) {
+    window.matchMedia("(min-width: 1280px)").addEventListener("change", function (mq) {
       if (mq.matches) setOpen(false);
     });
   }
@@ -153,8 +244,14 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    initNav();
-    Array.prototype.forEach.call(document.querySelectorAll(".quiz"), initQuiz);
-    Array.prototype.forEach.call(document.querySelectorAll("[data-checklist]"), initChecklist);
+    safe(initTheme);
+    safe(initNav);
+    safe(function () {
+      Array.prototype.forEach.call(document.querySelectorAll(".quiz"), initQuiz);
+    });
+    safe(function () {
+      Array.prototype.forEach.call(document.querySelectorAll("[data-checklist]"), initChecklist);
+    });
+    safe(initReveal);
   });
 })();
