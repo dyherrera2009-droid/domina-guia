@@ -2010,3 +2010,43 @@ main:focus { outline: none; }
   background: var(--surface);
   border-color: var(--border-strong);
 }
+
+/* ==========================================================
+   FOTOS (Unsplash)
+   ========================================================== */
+.photo { margin: 0 0 1.4em; }
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: auto; /* proporción 3:2 completa, sin recorte */
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--navy-soft);
+}
+
+.photo-credit {
+  margin-top: 8px;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.photo-credit a { color: var(--link); }
+
+/* Portada: debajo de la tarjeta "Datos del autor", con el mismo ancho */
+.photo-hero {
+  max-width: 560px;
+  margin: 20px 0 0;
+}
+
+.photo-hero img {
+  border-color: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.photo-hero .photo-credit { color: #E7EDF5; }
+.photo-hero .photo-credit a { color: #FFFFFF; }
+
+/* En modo oscuro las fotos se atenúan un poco para no deslumbrar */
+:root[data-theme="dark"] .photo img { filter: brightness(0.9); }
