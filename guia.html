@@ -197,6 +197,299 @@
             </li>
           </ol>
         </figure>
+        <div class="visual tool v-plan" data-planificador>
+          <h3 id="plan-con-fechas">Arma tu plan con fechas</h3>
+          <p>Escribe la fecha de tu examen y el plan de 4 semanas se acomoda a tu calendario.</p>
+          <form class="plan-form" novalidate>
+            <div class="field">
+              <label for="plan-fecha">Fecha de la Sesión 1 del examen</label>
+              <input type="date" id="plan-fecha" name="plan-fecha">
+            </div>
+            <button type="submit" class="btn">Generar mi plan</button>
+          </form>
+          <div class="plan-result" data-plan-result tabindex="-1" aria-label="Tu plan con fechas" hidden>
+            <p class="plan-msg" data-plan-msg hidden></p>
+            <ol class="plan-list" data-plan-list></ol>
+          </div>
+          <template data-plan-textos>
+            <p data-texto="extra">Tienes días extra antes de empezar. Úsalos para conseguir la guía oficial y reactivos de práctica.</p>
+            <p data-texto="comprimido">Tienes menos de 4 semanas, así que el plan se comprimió en 4 etapas.</p>
+            <p data-texto="pocos">Faltan muy pocos días. Repasa tus resúmenes, haz un simulacro corto y prioriza dormir bien.</p>
+            <p data-texto="futura">Elige una fecha futura.</p>
+            <p data-texto="noche"><strong>Noche anterior:</strong> prepara tus materiales y duerme entre 8 y 10 horas.</p>
+            <p data-actividad="1">diagnóstico con reactivos de práctica de los 4 módulos y de comunicación; identificar los temas más débiles.</p>
+            <p data-actividad="2">estudiar los temas débiles en sesiones cortas, con preguntas de práctica al final de cada sesión.</p>
+            <p data-actividad="3">repasar todos los módulos con los resúmenes y hacer un primer simulacro con tiempo.</p>
+            <p data-actividad="4">segundo simulacro, repaso ligero de los resúmenes y descanso completo la noche anterior.</p>
+          </template>
+        </div>
+      </section>
+      <section class="card" id="simulacro" aria-labelledby="simulacro-titulo">
+        <h2 id="simulacro-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Reloj</title><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Simulacro cronometrado</h2>
+        <div class="sim" data-simulacro data-total="2314">
+          <div class="sim-screen sim-start" data-sim-start>
+            <p>Pon a prueba lo que sabes con 16 reactivos al estilo del DOMINA: 2 de cada módulo de la combinación BSFM y 2 de cada habilidad de comunicación. El reloj corre al ritmo del examen real: 2 minutos con 15 segundos por reactivo en la Sesión 1 y unos 2 minutos con 34 segundos en la Sesión 2.</p>
+            <p class="notice">Reactivos de práctica elaborados para esta guía con el formato del examen. No son reactivos oficiales del Ceneval.</p>
+            <p class="sim-total"><strong>Tiempo total:</strong> 38 minutos con 34 segundos</p>
+            <button type="button" class="btn" data-sim-begin>Empezar simulacro<svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Flecha a la derecha</title><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+          </div>
+
+          <div class="sim-screen sim-exam" data-sim-exam hidden>
+            <div class="sim-top">
+              <p class="sim-clock" role="timer" aria-label="Tiempo restante">
+                <svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Reloj</title><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="sim-clock-label">Tiempo restante</span>
+                <span class="sim-clock-time" data-sim-time>38:34</span>
+              </p>
+              <p class="sim-warning" data-sim-warning role="status" aria-live="polite"></p>
+            </div>
+            <nav class="sim-nav" aria-label="Reactivos del simulacro">
+              <ol>
+              <li><button type="button" class="sim-nav-btn" data-go="1"><span class="sim-nav-num">1</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="2"><span class="sim-nav-num">2</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="3"><span class="sim-nav-num">3</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="4"><span class="sim-nav-num">4</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="5"><span class="sim-nav-num">5</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="6"><span class="sim-nav-num">6</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="7"><span class="sim-nav-num">7</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="8"><span class="sim-nav-num">8</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="9"><span class="sim-nav-num">9</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="10"><span class="sim-nav-num">10</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="11"><span class="sim-nav-num">11</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="12"><span class="sim-nav-num">12</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="13"><span class="sim-nav-num">13</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="14"><span class="sim-nav-num">14</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="15"><span class="sim-nav-num">15</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              <li><button type="button" class="sim-nav-btn" data-go="16"><span class="sim-nav-num">16</span><span class="sim-nav-flag" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span><span class="sr-only" data-nav-state></span></button></li>
+              </ol>
+              <p class="sim-legend"><span class="sim-legend-item"><span class="sim-legend-box is-answered" aria-hidden="true"></span>Respondido</span><span class="sim-legend-item"><span class="sim-legend-box is-marked" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" focusable="false"><title>Marcado</title><path d="M5 21V4h11l-2 4 2 4H7v9z"/></svg></span>Marcado para revisar</span></p>
+            </nav>
+            <div class="sim-items">
+            <article class="sim-item" id="sim-item-1" data-n="1" data-area="Física" data-correct="A" hidden>
+              <p class="sim-count">Reactivo 1 de 16</p>
+              <p class="quiz-module">Física</p>
+              <h3 class="sim-question" id="sim-q-1" tabindex="-1">Un objeto de 2 kg se acelera a 3 m/s². ¿Cuál es la fuerza neta que actúa sobre él?</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-1">
+                <input type="radio" id="sim-1-A" name="sim-1" value="A"><label for="sim-1-A"><span class="opt-letter">A)</span><span class="opt-text">6 N</span></label>
+                <input type="radio" id="sim-1-B" name="sim-1" value="B"><label for="sim-1-B"><span class="opt-letter">B)</span><span class="opt-text">1.5 N</span></label>
+                <input type="radio" id="sim-1-C" name="sim-1" value="C"><label for="sim-1-C"><span class="opt-letter">C)</span><span class="opt-text">5 N</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> por la segunda ley de Newton, F = m · a = 2 kg × 3 m/s² = 6 N. La opción B divide en lugar de multiplicar y la C suma los valores.</p>
+            </article>
+            <article class="sim-item" id="sim-item-2" data-n="2" data-area="Física" data-correct="B" hidden>
+              <p class="sim-count">Reactivo 2 de 16</p>
+              <p class="quiz-module">Física</p>
+              <h3 class="sim-question" id="sim-q-2" tabindex="-1">Una onda tiene una frecuencia de 50 Hz y una longitud de onda de 2 m. ¿Cuál es su velocidad de propagación?</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-2">
+                <input type="radio" id="sim-2-A" name="sim-2" value="A"><label for="sim-2-A"><span class="opt-letter">A)</span><span class="opt-text">25 m/s</span></label>
+                <input type="radio" id="sim-2-B" name="sim-2" value="B"><label for="sim-2-B"><span class="opt-letter">B)</span><span class="opt-text">100 m/s</span></label>
+                <input type="radio" id="sim-2-C" name="sim-2" value="C"><label for="sim-2-C"><span class="opt-letter">C)</span><span class="opt-text">52 m/s</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> la velocidad de una onda es v = f · λ = 50 Hz × 2 m = 100 m/s. La opción A divide y la C suma los valores.</p>
+            </article>
+            <article class="sim-item" id="sim-item-3" data-n="3" data-area="Cálculo diferencial e integral" data-correct="A" hidden>
+              <p class="sim-count">Reactivo 3 de 16</p>
+              <p class="quiz-module">Cálculo diferencial e integral</p>
+              <h3 class="sim-question" id="sim-q-3" tabindex="-1">¿Cuál es la derivada de f(x) = 4x³ − 2x + 7?</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-3">
+                <input type="radio" id="sim-3-A" name="sim-3" value="A"><label for="sim-3-A"><span class="opt-letter">A)</span><span class="opt-text">12x² − 2</span></label>
+                <input type="radio" id="sim-3-B" name="sim-3" value="B"><label for="sim-3-B"><span class="opt-letter">B)</span><span class="opt-text">12x² − 2x</span></label>
+                <input type="radio" id="sim-3-C" name="sim-3" value="C"><label for="sim-3-C"><span class="opt-letter">C)</span><span class="opt-text">4x² − 2</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> la derivada de 4x³ es 12x², la de −2x es −2 y la de una constante es 0. La opción B no derivó −2x y la C no multiplicó por el exponente.</p>
+            </article>
+            <article class="sim-item" id="sim-item-4" data-n="4" data-area="Cálculo diferencial e integral" data-correct="B" hidden>
+              <p class="sim-count">Reactivo 4 de 16</p>
+              <p class="quiz-module">Cálculo diferencial e integral</p>
+              <h3 class="sim-question" id="sim-q-4" tabindex="-1">¿Cuál es la integral indefinida de 6x con respecto a x?</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-4">
+                <input type="radio" id="sim-4-A" name="sim-4" value="A"><label for="sim-4-A"><span class="opt-letter">A)</span><span class="opt-text">6x² + C</span></label>
+                <input type="radio" id="sim-4-B" name="sim-4" value="B"><label for="sim-4-B"><span class="opt-letter">B)</span><span class="opt-text">3x² + C</span></label>
+                <input type="radio" id="sim-4-C" name="sim-4" value="C"><label for="sim-4-C"><span class="opt-letter">C)</span><span class="opt-text">3x + C</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> la integral de xⁿ es xⁿ⁺¹ / (n + 1), así que la integral de 6x es 6 · x² / 2 + C = 3x² + C. La opción A no dividió entre 2 y la C no aumentó el exponente.</p>
+            </article>
+            <article class="sim-item" id="sim-item-5" data-n="5" data-area="Administración" data-correct="B" hidden>
+              <p class="sim-count">Reactivo 5 de 16</p>
+              <p class="quiz-module">Administración</p>
+              <h3 class="sim-question" id="sim-q-5" tabindex="-1">¿Qué etapa del proceso administrativo compara los resultados con lo planeado y corrige las desviaciones?</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-5">
+                <input type="radio" id="sim-5-A" name="sim-5" value="A"><label for="sim-5-A"><span class="opt-letter">A)</span><span class="opt-text">Dirección</span></label>
+                <input type="radio" id="sim-5-B" name="sim-5" value="B"><label for="sim-5-B"><span class="opt-letter">B)</span><span class="opt-text">Control</span></label>
+                <input type="radio" id="sim-5-C" name="sim-5" value="C"><label for="sim-5-C"><span class="opt-letter">C)</span><span class="opt-text">Planeación</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> el control mide lo que se logró, lo compara con lo planeado y corrige. La dirección guía y motiva a las personas, y la planeación fija los objetivos.</p>
+            </article>
+            <article class="sim-item" id="sim-item-6" data-n="6" data-area="Administración" data-correct="A" hidden>
+              <p class="sim-count">Reactivo 6 de 16</p>
+              <p class="quiz-module">Administración</p>
+              <h3 class="sim-question" id="sim-q-6" tabindex="-1">En un análisis FODA, ¿cuáles son los factores internos de una organización?</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-6">
+                <input type="radio" id="sim-6-A" name="sim-6" value="A"><label for="sim-6-A"><span class="opt-letter">A)</span><span class="opt-text">Fortalezas y debilidades</span></label>
+                <input type="radio" id="sim-6-B" name="sim-6" value="B"><label for="sim-6-B"><span class="opt-letter">B)</span><span class="opt-text">Oportunidades y amenazas</span></label>
+                <input type="radio" id="sim-6-C" name="sim-6" value="C"><label for="sim-6-C"><span class="opt-letter">C)</span><span class="opt-text">Fortalezas y oportunidades</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> las fortalezas y debilidades dependen de la propia organización. Las oportunidades y amenazas vienen del entorno, por eso son factores externos.</p>
+            </article>
+            <article class="sim-item" id="sim-item-7" data-n="7" data-area="Historia universal" data-correct="A" hidden>
+              <p class="sim-count">Reactivo 7 de 16</p>
+              <p class="quiz-module">Historia universal</p>
+              <h3 class="sim-question" id="sim-q-7" tabindex="-1">¿En qué año comenzó la Revolución francesa con la toma de la Bastilla?</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-7">
+                <input type="radio" id="sim-7-A" name="sim-7" value="A"><label for="sim-7-A"><span class="opt-letter">A)</span><span class="opt-text">1789</span></label>
+                <input type="radio" id="sim-7-B" name="sim-7" value="B"><label for="sim-7-B"><span class="opt-letter">B)</span><span class="opt-text">1810</span></label>
+                <input type="radio" id="sim-7-C" name="sim-7" value="C"><label for="sim-7-C"><span class="opt-letter">C)</span><span class="opt-text">1776</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> la toma de la Bastilla fue el 14 de julio de 1789. En 1810 inició la Independencia de México y en 1776 se declaró la independencia de Estados Unidos.</p>
+            </article>
+            <article class="sim-item" id="sim-item-8" data-n="8" data-area="Historia universal" data-correct="B" hidden>
+              <p class="sim-count">Reactivo 8 de 16</p>
+              <p class="quiz-module">Historia universal</p>
+              <h3 class="sim-question" id="sim-q-8" tabindex="-1">¿Qué nombre recibe el conflicto entre Estados Unidos y la Unión Soviética después de la Segunda Guerra Mundial, en el que ambas potencias no se enfrentaron militarmente de forma directa?</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-8">
+                <input type="radio" id="sim-8-A" name="sim-8" value="A"><label for="sim-8-A"><span class="opt-letter">A)</span><span class="opt-text">Primera Guerra Mundial</span></label>
+                <input type="radio" id="sim-8-B" name="sim-8" value="B"><label for="sim-8-B"><span class="opt-letter">B)</span><span class="opt-text">Guerra Fría</span></label>
+                <input type="radio" id="sim-8-C" name="sim-8" value="C"><label for="sim-8-C"><span class="opt-letter">C)</span><span class="opt-text">Guerra de los Cien Años</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> la Guerra Fría fue una rivalidad política, económica e ideológica entre las dos potencias, sin una guerra directa entre ellas. Las otras dos opciones son conflictos de otras épocas.</p>
+            </article>
+            <article class="sim-item" id="sim-item-9" data-n="9" data-area="Comprensión lectora en español" data-correct="B" hidden>
+              <p class="sim-count">Reactivo 9 de 16</p>
+              <p class="quiz-module">Comprensión lectora en español</p>
+              <p class="quiz-stem">&quot;El ajolote es un anfibio endémico de los canales de Xochimilco. Aunque puede regenerar partes de su cuerpo, su población silvestre ha disminuido por la contaminación del agua y por la introducción de especies como la carpa y la tilapia.&quot;</p>
+              <h3 class="sim-question" id="sim-q-9" tabindex="-1">Según el texto, ¿qué ha provocado la disminución del ajolote en su hábitat?</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-9">
+                <input type="radio" id="sim-9-A" name="sim-9" value="A"><label for="sim-9-A"><span class="opt-letter">A)</span><span class="opt-text">Su capacidad de regenerar partes de su cuerpo</span></label>
+                <input type="radio" id="sim-9-B" name="sim-9" value="B"><label for="sim-9-B"><span class="opt-letter">B)</span><span class="opt-text">La contaminación del agua y las especies introducidas</span></label>
+                <input type="radio" id="sim-9-C" name="sim-9" value="C"><label for="sim-9-C"><span class="opt-letter">C)</span><span class="opt-text">Que vive fuera de los canales de Xochimilco</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> el texto dice directamente que la población disminuyó por la contaminación y por especies como la carpa y la tilapia. La regeneración es una característica, no una causa, y el texto dice que vive en Xochimilco.</p>
+            </article>
+            <article class="sim-item" id="sim-item-10" data-n="10" data-area="Comprensión lectora en español" data-correct="A" hidden>
+              <p class="sim-count">Reactivo 10 de 16</p>
+              <p class="quiz-module">Comprensión lectora en español</p>
+              <p class="quiz-stem">&quot;El ajolote es un anfibio endémico de los canales de Xochimilco. Aunque puede regenerar partes de su cuerpo, su población silvestre ha disminuido por la contaminación del agua y por la introducción de especies como la carpa y la tilapia.&quot;</p>
+              <h3 class="sim-question" id="sim-q-10" tabindex="-1">En el texto, ¿qué significa la palabra &quot;endémico&quot;?</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-10">
+                <input type="radio" id="sim-10-A" name="sim-10" value="A"><label for="sim-10-A"><span class="opt-letter">A)</span><span class="opt-text">Que solo vive de forma natural en ese lugar</span></label>
+                <input type="radio" id="sim-10-B" name="sim-10" value="B"><label for="sim-10-B"><span class="opt-letter">B)</span><span class="opt-text">Que está enfermo</span></label>
+                <input type="radio" id="sim-10-C" name="sim-10" value="C"><label for="sim-10-C"><span class="opt-letter">C)</span><span class="opt-text">Que se encuentra en todo el mundo</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> una especie endémica es la que solo existe de forma natural en una región. La opción B confunde la palabra con &quot;epidemia&quot; y la C dice lo contrario.</p>
+            </article>
+            <article class="sim-item" id="sim-item-11" data-n="11" data-area="Redacción indirecta en español" data-correct="B" hidden>
+              <p class="sim-count">Reactivo 11 de 16</p>
+              <p class="quiz-module">Redacción indirecta en español</p>
+              <h3 class="sim-question" id="sim-q-11" tabindex="-1">Elige la opción que completa correctamente la oración: &quot;No entiendo ______ cambiaron la fecha del examen.&quot;</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-11">
+                <input type="radio" id="sim-11-A" name="sim-11" value="A"><label for="sim-11-A"><span class="opt-letter">A)</span><span class="opt-text">porque</span></label>
+                <input type="radio" id="sim-11-B" name="sim-11" value="B"><label for="sim-11-B"><span class="opt-letter">B)</span><span class="opt-text">por qué</span></label>
+                <input type="radio" id="sim-11-C" name="sim-11" value="C"><label for="sim-11-C"><span class="opt-letter">C)</span><span class="opt-text">porqué</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> &quot;por qué&quot;, separado y con acento, se usa en preguntas directas e indirectas. &quot;Porque&quot; introduce una causa y &quot;porqué&quot; es un sustantivo que significa &quot;el motivo&quot;.</p>
+            </article>
+            <article class="sim-item" id="sim-item-12" data-n="12" data-area="Redacción indirecta en español" data-correct="A" hidden>
+              <p class="sim-count">Reactivo 12 de 16</p>
+              <p class="quiz-module">Redacción indirecta en español</p>
+              <h3 class="sim-question" id="sim-q-12" tabindex="-1">Elige la oración con la puntuación correcta.</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-12">
+                <input type="radio" id="sim-12-A" name="sim-12" value="A"><label for="sim-12-A"><span class="opt-letter">A)</span><span class="opt-text">Para el examen, lleva lápiz, goma y calculadora.</span></label>
+                <input type="radio" id="sim-12-B" name="sim-12" value="B"><label for="sim-12-B"><span class="opt-letter">B)</span><span class="opt-text">Para el examen lleva, lápiz goma y calculadora.</span></label>
+                <input type="radio" id="sim-12-C" name="sim-12" value="C"><label for="sim-12-C"><span class="opt-letter">C)</span><span class="opt-text">Para el examen lleva: lápiz, goma, y, calculadora.</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> en una enumeración se separan los elementos con comas y el último se une con &quot;y&quot; sin coma. La opción B pone la coma en un lugar que separa el verbo de lo que se lleva y la C agrega comas alrededor de &quot;y&quot;.</p>
+            </article>
+            <article class="sim-item" id="sim-item-13" data-n="13" data-area="Comprensión lectora en inglés" data-correct="B" hidden>
+              <p class="sim-count">Reactivo 13 de 16</p>
+              <p class="quiz-module">Comprensión lectora en inglés</p>
+              <p class="quiz-stem" lang="en">&quot;Maria studies for thirty minutes every day instead of studying for five hours the night before the exam. She says this helps her remember more.&quot;</p>
+              <h3 class="sim-question" id="sim-q-13" tabindex="-1" lang="en">Why does Maria study a little every day?</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-13">
+                <input type="radio" id="sim-13-A" name="sim-13" value="A"><label for="sim-13-A"><span class="opt-letter">A)</span><span class="opt-text" lang="en">Because she does not have time</span></label>
+                <input type="radio" id="sim-13-B" name="sim-13" value="B"><label for="sim-13-B"><span class="opt-letter">B)</span><span class="opt-text" lang="en">Because it helps her remember more</span></label>
+                <input type="radio" id="sim-13-C" name="sim-13" value="C"><label for="sim-13-C"><span class="opt-letter">C)</span><span class="opt-text" lang="en">Because the exam is tomorrow</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> el texto dice &quot;<span lang="en">She says this helps her remember more</span>&quot;. Nada indica que no tenga tiempo ni que el examen sea mañana.</p>
+            </article>
+            <article class="sim-item" id="sim-item-14" data-n="14" data-area="Comprensión lectora en inglés" data-correct="B" hidden>
+              <p class="sim-count">Reactivo 14 de 16</p>
+              <p class="quiz-module">Comprensión lectora en inglés</p>
+              <p class="quiz-stem" lang="en">&quot;Maria studies for thirty minutes every day instead of studying for five hours the night before the exam. She says this helps her remember more.&quot;</p>
+              <h3 class="sim-question" id="sim-q-14" tabindex="-1" lang="en">In the text, what does &quot;instead of&quot; mean?</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-14">
+                <input type="radio" id="sim-14-A" name="sim-14" value="A"><label for="sim-14-A"><span class="opt-letter">A)</span><span class="opt-text">además de</span></label>
+                <input type="radio" id="sim-14-B" name="sim-14" value="B"><label for="sim-14-B"><span class="opt-letter">B)</span><span class="opt-text">en lugar de</span></label>
+                <input type="radio" id="sim-14-C" name="sim-14" value="C"><label for="sim-14-C"><span class="opt-letter">C)</span><span class="opt-text">después de</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> &quot;<span lang="en">instead of</span>&quot; significa &quot;en lugar de&quot;. María estudia un poco cada día en lugar de estudiar cinco horas la noche anterior.</p>
+            </article>
+            <article class="sim-item" id="sim-item-15" data-n="15" data-area="Redacción indirecta en inglés" data-correct="C" hidden>
+              <p class="sim-count">Reactivo 15 de 16</p>
+              <p class="quiz-module">Redacción indirecta en inglés</p>
+              <h3 class="sim-question" id="sim-q-15" tabindex="-1" lang="en">Choose the correct option: &quot;She ______ to the library yesterday.&quot;</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-15">
+                <input type="radio" id="sim-15-A" name="sim-15" value="A"><label for="sim-15-A"><span class="opt-letter">A)</span><span class="opt-text" lang="en">go</span></label>
+                <input type="radio" id="sim-15-B" name="sim-15" value="B"><label for="sim-15-B"><span class="opt-letter">B)</span><span class="opt-text" lang="en">goes</span></label>
+                <input type="radio" id="sim-15-C" name="sim-15" value="C"><label for="sim-15-C"><span class="opt-letter">C)</span><span class="opt-text" lang="en">went</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> &quot;<span lang="en">yesterday</span>&quot; indica pasado, así que se usa el pasado simple de &quot;<span lang="en">go</span>&quot;, que es irregular: &quot;<span lang="en">went</span>&quot;.</p>
+            </article>
+            <article class="sim-item" id="sim-item-16" data-n="16" data-area="Redacción indirecta en inglés" data-correct="B" hidden>
+              <p class="sim-count">Reactivo 16 de 16</p>
+              <p class="quiz-module">Redacción indirecta en inglés</p>
+              <h3 class="sim-question" id="sim-q-16" tabindex="-1" lang="en">Choose the correct option: &quot;I have lived in Mexico City ______ 2015.&quot;</h3>
+              <div class="sim-options" role="radiogroup" aria-labelledby="sim-q-16">
+                <input type="radio" id="sim-16-A" name="sim-16" value="A"><label for="sim-16-A"><span class="opt-letter">A)</span><span class="opt-text" lang="en">for</span></label>
+                <input type="radio" id="sim-16-B" name="sim-16" value="B"><label for="sim-16-B"><span class="opt-letter">B)</span><span class="opt-text" lang="en">since</span></label>
+                <input type="radio" id="sim-16-C" name="sim-16" value="C"><label for="sim-16-C"><span class="opt-letter">C)</span><span class="opt-text" lang="en">during</span></label>
+              </div>
+              <p class="sim-expl" hidden><strong>Explicación:</strong> con el presente perfecto, &quot;<span lang="en">since</span>&quot; indica el punto de inicio, como un año, y &quot;<span lang="en">for</span>&quot; indica una duración, como &quot;<span lang="en">for ten years</span>&quot;.</p>
+            </article>
+            </div>
+            <div class="sim-controls">
+              <button type="button" class="btn btn-secondary" data-sim-prev><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Flecha a la izquierda</title><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>Anterior</button>
+              <button type="button" class="btn btn-secondary sim-mark" data-sim-mark aria-pressed="false"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Bandera</title><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>Marcar para revisar</button>
+              <button type="button" class="btn btn-secondary" data-sim-next>Siguiente<svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Flecha a la derecha</title><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+            </div>
+            <div class="sim-finish">
+              <button type="button" class="btn" data-sim-finish>Terminar simulacro</button>
+            </div>
+            <div class="sim-confirm" data-sim-confirm role="alertdialog" aria-modal="false" aria-labelledby="sim-confirm-txt" hidden>
+              <p id="sim-confirm-txt" data-sim-confirm-txt tabindex="-1"></p>
+              <div class="sim-confirm-actions">
+                <button type="button" class="btn" data-sim-confirm-yes>Sí, terminar</button>
+                <button type="button" class="btn btn-secondary" data-sim-confirm-no>Seguir respondiendo</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="sim-screen sim-results" data-sim-results tabindex="-1" aria-labelledby="sim-res-titulo" hidden>
+            <h3 id="sim-res-titulo">Resultados del simulacro</h3>
+            <p class="sim-score" data-sim-score></p>
+            <p class="sim-msg" data-sim-msg></p>
+            <p class="sim-used"><strong>Tiempo usado:</strong> <span data-sim-used></span></p>
+            <h4>Aciertos por área</h4>
+            <ul class="sim-areas" data-sim-areas></ul>
+            <h4>Revisión de los 16 reactivos</h4>
+            <ol class="sim-review" data-sim-review></ol>
+            <button type="button" class="btn" data-sim-restart>Reiniciar simulacro</button>
+          </div>
+
+          <template data-sim-textos>
+            <p data-texto="confirmar">Tienes X reactivos sin responder. ¿Quieres terminar?</p>
+            <p data-texto="cinco">Quedan 5 minutos</p>
+            <p data-rango="0">Aún hay mucho por reforzar. Usa el autodiagnóstico y empieza por tus áreas con menos aciertos.</p>
+            <p data-rango="50">Vas por buen camino. Revisa las explicaciones de los reactivos que fallaste y repite el simulacro en unos días.</p>
+            <p data-rango="80">Muy buen resultado. Mantén el ritmo con repasos espaciados para llegar así al examen.</p>
+            <p data-area-orden="0">Física</p>
+            <p data-area-orden="1">Cálculo diferencial e integral</p>
+            <p data-area-orden="2">Administración</p>
+            <p data-area-orden="3">Historia universal</p>
+            <p data-area-orden="4">Comprensión lectora en español</p>
+            <p data-area-orden="5">Redacción indirecta en español</p>
+            <p data-area-orden="6">Comprensión lectora en inglés</p>
+            <p data-area-orden="7">Redacción indirecta en inglés</p>
+          </template>
+        </div>
       </section>
     </div>
 
