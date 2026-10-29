@@ -54,6 +54,101 @@
           <li><strong>Repasar en varios días.</strong> Estudiar un tema en varias sesiones cortas separadas por días funciona mejor que una sola sesión larga la noche anterior (Cepeda et al., 2006).</li>
           <li><strong>Simular el examen.</strong> Resolver reactivos con el mismo tiempo y formato del examen real te acostumbra al ritmo y reduce los nervios el día de la aplicación.</li>
           <li><strong>Empezar por un diagnóstico.</strong> Antes de estudiar, resuelve algunos reactivos de cada módulo para saber cuál te cuesta más y dedicarle más tiempo.</li>
+        </ol>
+        <div class="visual tool v-diag" data-diagnostico>
+          <h3 id="diag-titulo">Haz tu autodiagnóstico</h3>
+          <p>Antes de estudiar, califica qué tan bien dominas cada área del examen. Sé honesto: el objetivo es saber por dónde empezar, no sacar una buena calificación.</p>
+          <form class="diag-form" novalidate aria-labelledby="diag-titulo">
+            <fieldset class="diag-area" data-area="Física">
+              <legend>Física</legend>
+              <div class="diag-scale">
+                <input type="radio" id="diag-1-1" name="diag-1" value="1"><label for="diag-1-1"><span class="diag-num">1</span><span class="diag-txt">No lo domino</span></label>
+                <input type="radio" id="diag-1-2" name="diag-1" value="2"><label for="diag-1-2"><span class="diag-num">2</span><span class="diag-txt">Me cuesta trabajo</span></label>
+                <input type="radio" id="diag-1-3" name="diag-1" value="3"><label for="diag-1-3"><span class="diag-num">3</span><span class="diag-txt">Lo entiendo</span></label>
+                <input type="radio" id="diag-1-4" name="diag-1" value="4"><label for="diag-1-4"><span class="diag-num">4</span><span class="diag-txt">Lo domino</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="diag-area" data-area="Cálculo diferencial e integral">
+              <legend>Cálculo diferencial e integral</legend>
+              <div class="diag-scale">
+                <input type="radio" id="diag-2-1" name="diag-2" value="1"><label for="diag-2-1"><span class="diag-num">1</span><span class="diag-txt">No lo domino</span></label>
+                <input type="radio" id="diag-2-2" name="diag-2" value="2"><label for="diag-2-2"><span class="diag-num">2</span><span class="diag-txt">Me cuesta trabajo</span></label>
+                <input type="radio" id="diag-2-3" name="diag-2" value="3"><label for="diag-2-3"><span class="diag-num">3</span><span class="diag-txt">Lo entiendo</span></label>
+                <input type="radio" id="diag-2-4" name="diag-2" value="4"><label for="diag-2-4"><span class="diag-num">4</span><span class="diag-txt">Lo domino</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="diag-area" data-area="Administración">
+              <legend>Administración</legend>
+              <div class="diag-scale">
+                <input type="radio" id="diag-3-1" name="diag-3" value="1"><label for="diag-3-1"><span class="diag-num">1</span><span class="diag-txt">No lo domino</span></label>
+                <input type="radio" id="diag-3-2" name="diag-3" value="2"><label for="diag-3-2"><span class="diag-num">2</span><span class="diag-txt">Me cuesta trabajo</span></label>
+                <input type="radio" id="diag-3-3" name="diag-3" value="3"><label for="diag-3-3"><span class="diag-num">3</span><span class="diag-txt">Lo entiendo</span></label>
+                <input type="radio" id="diag-3-4" name="diag-3" value="4"><label for="diag-3-4"><span class="diag-num">4</span><span class="diag-txt">Lo domino</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="diag-area" data-area="Historia universal">
+              <legend>Historia universal</legend>
+              <div class="diag-scale">
+                <input type="radio" id="diag-4-1" name="diag-4" value="1"><label for="diag-4-1"><span class="diag-num">1</span><span class="diag-txt">No lo domino</span></label>
+                <input type="radio" id="diag-4-2" name="diag-4" value="2"><label for="diag-4-2"><span class="diag-num">2</span><span class="diag-txt">Me cuesta trabajo</span></label>
+                <input type="radio" id="diag-4-3" name="diag-4" value="3"><label for="diag-4-3"><span class="diag-num">3</span><span class="diag-txt">Lo entiendo</span></label>
+                <input type="radio" id="diag-4-4" name="diag-4" value="4"><label for="diag-4-4"><span class="diag-num">4</span><span class="diag-txt">Lo domino</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="diag-area" data-area="Comprensión lectora en español">
+              <legend>Comprensión lectora en español</legend>
+              <div class="diag-scale">
+                <input type="radio" id="diag-5-1" name="diag-5" value="1"><label for="diag-5-1"><span class="diag-num">1</span><span class="diag-txt">No lo domino</span></label>
+                <input type="radio" id="diag-5-2" name="diag-5" value="2"><label for="diag-5-2"><span class="diag-num">2</span><span class="diag-txt">Me cuesta trabajo</span></label>
+                <input type="radio" id="diag-5-3" name="diag-5" value="3"><label for="diag-5-3"><span class="diag-num">3</span><span class="diag-txt">Lo entiendo</span></label>
+                <input type="radio" id="diag-5-4" name="diag-5" value="4"><label for="diag-5-4"><span class="diag-num">4</span><span class="diag-txt">Lo domino</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="diag-area" data-area="Redacción indirecta en español">
+              <legend>Redacción indirecta en español</legend>
+              <div class="diag-scale">
+                <input type="radio" id="diag-6-1" name="diag-6" value="1"><label for="diag-6-1"><span class="diag-num">1</span><span class="diag-txt">No lo domino</span></label>
+                <input type="radio" id="diag-6-2" name="diag-6" value="2"><label for="diag-6-2"><span class="diag-num">2</span><span class="diag-txt">Me cuesta trabajo</span></label>
+                <input type="radio" id="diag-6-3" name="diag-6" value="3"><label for="diag-6-3"><span class="diag-num">3</span><span class="diag-txt">Lo entiendo</span></label>
+                <input type="radio" id="diag-6-4" name="diag-6" value="4"><label for="diag-6-4"><span class="diag-num">4</span><span class="diag-txt">Lo domino</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="diag-area" data-area="Comprensión lectora en inglés">
+              <legend>Comprensión lectora en inglés</legend>
+              <div class="diag-scale">
+                <input type="radio" id="diag-7-1" name="diag-7" value="1"><label for="diag-7-1"><span class="diag-num">1</span><span class="diag-txt">No lo domino</span></label>
+                <input type="radio" id="diag-7-2" name="diag-7" value="2"><label for="diag-7-2"><span class="diag-num">2</span><span class="diag-txt">Me cuesta trabajo</span></label>
+                <input type="radio" id="diag-7-3" name="diag-7" value="3"><label for="diag-7-3"><span class="diag-num">3</span><span class="diag-txt">Lo entiendo</span></label>
+                <input type="radio" id="diag-7-4" name="diag-7" value="4"><label for="diag-7-4"><span class="diag-num">4</span><span class="diag-txt">Lo domino</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="diag-area" data-area="Redacción indirecta en inglés">
+              <legend>Redacción indirecta en inglés</legend>
+              <div class="diag-scale">
+                <input type="radio" id="diag-8-1" name="diag-8" value="1"><label for="diag-8-1"><span class="diag-num">1</span><span class="diag-txt">No lo domino</span></label>
+                <input type="radio" id="diag-8-2" name="diag-8" value="2"><label for="diag-8-2"><span class="diag-num">2</span><span class="diag-txt">Me cuesta trabajo</span></label>
+                <input type="radio" id="diag-8-3" name="diag-8" value="3"><label for="diag-8-3"><span class="diag-num">3</span><span class="diag-txt">Lo entiendo</span></label>
+                <input type="radio" id="diag-8-4" name="diag-8" value="4"><label for="diag-8-4"><span class="diag-num">4</span><span class="diag-txt">Lo domino</span></label>
+              </div>
+            </fieldset>
+            <div class="tool-actions">
+              <button type="submit" class="btn">Ver mi diagnóstico</button>
+              <p class="tool-alert" data-diag-alert role="status" aria-live="polite"></p>
+            </div>
+          </form>
+          <div class="diag-result" data-diag-result tabindex="-1" aria-label="Resultado del autodiagnóstico" hidden>
+            <ol class="diag-list"></ol>
+            <p class="tool-note">Este autodiagnóstico es una guía personal y no sustituye el resultado oficial del examen.</p>
+          </div>
+          <template data-diag-textos>
+            <p data-texto="falta">Califica las 8 áreas para ver tu diagnóstico</p>
+            <p data-nivel="1" data-etiqueta="No lo domino">Prioridad alta. Empieza tu plan de repaso con esta área y dale sesiones cortas casi todos los días.</p>
+            <p data-nivel="2" data-etiqueta="Me cuesta trabajo">Prioridad media. Repásala varias veces por semana y resuelve preguntas de práctica al final de cada sesión.</p>
+            <p data-nivel="3" data-etiqueta="Lo entiendo">Vas bien. Mantenla con repasos espaciados y un simulacro para confirmar.</p>
+            <p data-nivel="4" data-etiqueta="Lo domino">Fortaleza. Repásala de forma ligera para no olvidarla y usa ese tiempo en tus áreas débiles.</p>
+          </template>
+        </div>
+        <ol class="olist olist-cont" start="5">
           <li><strong>Usar la guía oficial.</strong> El Ceneval publica una guía para el sustentante con los temas de cada módulo y ejemplos de reactivos (Ceneval, 2023).</li>
         </ol>
       </section>

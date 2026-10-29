@@ -243,8 +243,100 @@
     update();
   }
 
+  /* ---------- Mejora 1: autodiagnóstico ---------- */
+  function initDiagnostico(box) {
+    var form = box.querySelector(".diag-form");
+    var alertBox = box.querySelector("[data-diag-alert]");
+    var result = box.querySelector("[data-diag-result]");
+    var list = box.querySelector(".diag-list");
+    var tpl = box.querySelector("template[data-diag-textos]");
+    if (!form || !alertBox || !result || !list || !tpl) return;
+
+    var textos = tpl.content;
+    var faltaTxt = textos.querySelector('[data-texto="falta"]').textContent;
+    var areas = box.querySelectorAll(".diag-area");
+
+    function setMissing(fs, missing) {
+      fs.classList.toggle("is-missing", missing);
+      var tag = fs.querySelector(".diag-missing");
+      if (missing && !tag) {
+        tag = document.createElement("span");
+        tag.className = "diag-missing";
+        tag.textContent = "Sin calificar";
+        fs.querySelector("legend").appendChild(tag);
+      } else if (!missing && tag) {
+        tag.parentNode.removeChild(tag);
+      }
+    }
+
+    function readRatings() {
+      return Array.prototype.map.call(areas, function (fs, i) {
+        var checked = fs.querySelector("input:checked");
+        return { fs: fs, area: fs.getAttribute("data-area"), level: checked ? Number(checked.value) : 0, order: i };
+      });
+    }
+
+    form.addEventListener("change", function (e) {
+      var fs = e.target.closest(".diag-area");
+      if (fs) setMissing(fs, false);
+      if (alertBox.textContent && readRatings().every(function (r) { return r.level; })) {
+        alertBox.textContent = "";
+      }
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var ratings = readRatings();
+      var missing = ratings.filter(function (r) { return !r.level; });
+
+      if (missing.length) {
+        ratings.forEach(function (r) { setMissing(r.fs, !r.level); });
+        alertBox.textContent = faltaTxt;
+        result.hidden = true;
+        missing[0].fs.querySelector("input").focus();
+        return;
+      }
+
+      alertBox.textContent = "";
+      // De la calificación más baja a la más alta; en empates, el orden original.
+      ratings.sort(function (a, b) { return a.level - b.level || a.order - b.order; });
+
+      list.innerHTML = "";
+      ratings.forEach(function (r) {
+        var msg = textos.querySelector('[data-nivel="' + r.level + '"]');
+        var li = document.createElement("li");
+        li.className = "nivel-" + r.level;
+
+        var head = document.createElement("div");
+        head.className = "diag-head";
+        var name = document.createElement("span");
+        name.className = "diag-name";
+        name.textContent = r.area;
+        var badge = document.createElement("span");
+        badge.className = "diag-badge";
+        badge.textContent = r.level + " = " + msg.getAttribute("data-etiqueta");
+        head.appendChild(name);
+        head.appendChild(badge);
+
+        var p = document.createElement("p");
+        p.className = "diag-msg";
+        p.textContent = msg.textContent;
+
+        li.appendChild(head);
+        li.appendChild(p);
+        list.appendChild(li);
+      });
+
+      result.hidden = false;
+      result.focus();
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     safe(initTheme);
+    safe(function () {
+      Array.prototype.forEach.call(document.querySelectorAll("[data-diagnostico]"), initDiagnostico);
+    });
     safe(initNav);
     safe(function () {
       Array.prototype.forEach.call(document.querySelectorAll(".quiz"), initQuiz);
