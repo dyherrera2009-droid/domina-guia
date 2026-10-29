@@ -231,7 +231,8 @@ main:focus { outline: none; }
   box-shadow: 0 2px 12px rgba(15, 42, 74, 0.25);
 }
 
-.site-header :focus-visible { outline-color: var(--amber); }
+.site-header :focus-visible,
+.hero :focus-visible { outline-color: var(--amber); }
 
 .header-inner {
   display: flex;
