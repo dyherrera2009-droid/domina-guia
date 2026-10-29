@@ -33,7 +33,128 @@
     });
   }
 
+  /* ---------- Iconos para la retroalimentación ---------- */
+  var ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+    '<title>Correcto</title><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>';
+  var ICON_BAD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+    '<title>Incorrecto</title><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>';
+
+  /* ---------- Reactivos interactivos ---------- */
+  function initQuiz(card) {
+    var correct = card.getAttribute("data-correct");
+    var options = card.querySelectorAll(".quiz-option");
+    var body = card.querySelector(".quiz-feedback-body");
+    var result = card.querySelector(".quiz-result");
+    var retry = card.querySelector(".quiz-retry");
+    if (!correct || !options.length || !body || !result || !retry) return;
+
+    result.setAttribute("tabindex", "-1");
+
+    function answer(chosen) {
+      var isRight = chosen.getAttribute("data-option") === correct;
+      Array.prototype.forEach.call(options, function (opt) {
+        var status = opt.querySelector(".opt-status");
+        var letter = opt.getAttribute("data-option");
+        opt.disabled = true;
+        if (letter === correct) {
+          opt.classList.add("is-correct");
+          status.innerHTML = ICON_OK + (opt === chosen ? "Correcta" : "Respuesta correcta");
+        } else if (opt === chosen) {
+          opt.classList.add("is-wrong");
+          status.innerHTML = ICON_BAD + "Incorrecta";
+        } else {
+          opt.classList.add("is-dimmed");
+        }
+        if (opt === chosen) opt.setAttribute("aria-pressed", "true");
+      });
+
+      result.className = "quiz-result " + (isRight ? "is-correct" : "is-wrong");
+      result.innerHTML = isRight ? ICON_OK + "¡Correcto!" : ICON_BAD + "Incorrecto.";
+      body.hidden = false;
+      result.focus();
+    }
+
+    function reset() {
+      Array.prototype.forEach.call(options, function (opt) {
+        opt.disabled = false;
+        opt.classList.remove("is-correct", "is-wrong", "is-dimmed");
+        opt.removeAttribute("aria-pressed");
+        opt.querySelector(".opt-status").innerHTML = "";
+      });
+      body.hidden = true;
+      result.innerHTML = "";
+      options[0].focus();
+    }
+
+    Array.prototype.forEach.call(options, function (opt) {
+      opt.addEventListener("click", function () {
+        if (!opt.disabled) answer(opt);
+      });
+    });
+    retry.addEventListener("click", reset);
+  }
+
+  /* ---------- Checklist con localStorage ---------- */
+  var STORAGE_KEY = "domina-checklist";
+
+  function loadChecked() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      var data = raw ? JSON.parse(raw) : [];
+      return Array.isArray(data) ? data : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveChecked(keys) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(keys));
+    } catch (e) {
+      /* Sin localStorage la lista funciona, pero no se guarda. */
+    }
+  }
+
+  function initChecklist(box) {
+    var inputs = box.querySelectorAll('input[type="checkbox"]');
+    var count = box.querySelector("[data-count]");
+    var bar = box.querySelector(".check-progress-bar");
+    var resetBtn = box.querySelector(".check-reset");
+    var saved = loadChecked();
+
+    function update() {
+      var keys = [];
+      Array.prototype.forEach.call(inputs, function (input) {
+        if (input.checked) keys.push(input.getAttribute("data-key"));
+      });
+      if (count) count.textContent = String(keys.length);
+      if (bar) bar.style.width = (keys.length / inputs.length * 100) + "%";
+      return keys;
+    }
+
+    Array.prototype.forEach.call(inputs, function (input) {
+      input.checked = saved.indexOf(input.getAttribute("data-key")) !== -1;
+      input.addEventListener("change", function () {
+        saveChecked(update());
+      });
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        Array.prototype.forEach.call(inputs, function (input) { input.checked = false; });
+        saveChecked(update());
+        if (inputs[0]) inputs[0].focus();
+      });
+    }
+
+    update();
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initNav();
+    Array.prototype.forEach.call(document.querySelectorAll(".quiz"), initQuiz);
+    Array.prototype.forEach.call(document.querySelectorAll("[data-checklist]"), initChecklist);
   });
 })();
