@@ -2510,3 +2510,88 @@ html.lenis body { height: auto; }
   .marquee-toggle { display: none !important; }
 }
 
+/* ==========================================================
+   EFECTOS · Tanda 2
+   Las clases .is-horizontal, .is-stacked y .cursor-dot solo las pone
+   script.js cuando GSAP cargó, el ancho es de 900 px o más y no se pidió
+   reducir movimiento. Sin ellas, todo se ve en su versión normal.
+   ========================================================== */
+
+/* Plan de 4 semanas en horizontal: cada semana es una tarjeta grande y la
+   fila avanza de lado mientras la sección está fija. */
+.v-timeline.is-horizontal { overflow: hidden; container-type: inline-size; }
+.v-timeline.is-horizontal .timeline {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  will-change: transform;
+}
+.v-timeline.is-horizontal .timeline::before { left: 28px; right: 28px; }
+.v-timeline.is-horizontal .tl-item {
+  flex: 0 0 64cqi;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  grid-template-rows: auto 1fr;
+  column-gap: 14px;
+  align-items: center;
+  text-align: left;
+}
+.v-timeline.is-horizontal .tl-week {
+  justify-self: start;
+  margin: 0;
+  padding: 4px 16px;
+  font-size: 1.25rem;
+}
+.v-timeline.is-horizontal .tl-text {
+  grid-column: 1 / -1;
+  margin-top: 16px;
+  padding: 20px 22px;
+  font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  line-height: 1.5;
+}
+
+/* Grupos UVM apilados: cada tarjeta se queda arriba y la siguiente se le
+   encima, dejando a la vista el nombre y la clave de las anteriores. */
+/* Todas miden lo mismo (--stack-h, la más alta) y el margen inferior baja
+   52 px por tarjeta: así el borde inferior de la lista las alcanza a todas
+   a la vez y la pila sale completa, sin desacomodarse. */
+.map-leaves.is-stacked { display: flow-root; }
+.map-leaves.is-stacked .group-card {
+  position: sticky;
+  top: calc(var(--header-h) + 24px + var(--stack-i, 0) * 52px);
+  z-index: calc(1 + var(--stack-i, 0));
+  min-height: var(--stack-h, auto);
+  margin-bottom: calc(24px + (var(--stack-n, 1) - 1 - var(--stack-i, 0)) * 52px);
+  box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.35);
+  transform-origin: 50% 0;
+}
+/* Los tramos verticales de cada hoja se mueven con su tarjeta; en el modo
+   apilado se cambian por una sola línea fija a lo largo de la rama. */
+.map-leaves.is-stacked .group-card::after { display: none; }
+.map-leaves.is-stacked::before {
+  content: "";
+  position: absolute;
+  left: 12px; top: 0; bottom: 26px;
+  width: 3px;
+  background: var(--border-strong);
+}
+
+/* Punto que sigue al cursor: decorativo, no reemplaza al cursor del sistema */
+.cursor-dot {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 200;
+  width: 10px; height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 0 2px var(--ink);
+  pointer-events: none;
+  opacity: 0;
+}
+:root[data-theme="dark"] .cursor-dot { box-shadow: 0 0 0 2px #0B1422; }
+
+@media print {
+  .cursor-dot { display: none; }
+}
+

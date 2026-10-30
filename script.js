@@ -98,12 +98,30 @@
       // Las líneas de los títulos se miden con la fuente final ya cargada
       whenFontsReady(function () {
         context.add(function () { stopTitles = titleMotion(gsap); });
+        ScrollTrigger.sort();
         ScrollTrigger.refresh();
       });
       return function () {
         if (stopSmooth) stopSmooth();
         if (stopTitles) stopTitles();
       };
+    });
+
+    // Plan de 4 semanas en horizontal y grupos UVM apilados: solo desde 900 px
+    // y con alto suficiente para que la sección fija quepa completa
+    mm.add("(min-width: 900px) and (min-height: 560px) and (prefers-reduced-motion: no-preference)", function () {
+      var stopPlan = horizontalPlan(gsap, ScrollTrigger);
+      var stopStack = stackedGroups(gsap, ScrollTrigger);
+      ScrollTrigger.sort();
+      return function () {
+        if (stopPlan) stopPlan();
+        if (stopStack) stopStack();
+      };
+    });
+
+    // Botones magnéticos y punto que sigue al cursor: solo con mouse o trackpad
+    mm.add("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)", function () {
+      return pointerEffects(gsap);
     });
 
     // Si se cambia a reducir movimiento a mitad de la visita, todo vuelve a su estado final
@@ -391,6 +409,179 @@
         scrollTrigger: { trigger: frame, start: "top bottom", end: "bottom top", scrub: true }
       });
     });
+  }
+
+  function headerHeight() {
+    var header = document.querySelector(".site-header");
+    return header ? header.offsetHeight : 0;
+  }
+
+  /* Plan de 4 semanas: la sección se fija y las semanas avanzan de lado.
+     El tramo fijo mide exactamente lo que la fila tiene que recorrer, así que
+     el scroll nunca se queda sin avanzar. */
+  function horizontalPlan(gsap, ScrollTrigger) {
+    var fig = document.querySelector(".v-timeline");
+    var track = fig && fig.querySelector(".timeline");
+    if (!track) return null;
+    fig.classList.add("is-horizontal");
+
+    function inner() {
+      var cs = getComputedStyle(fig);
+      return fig.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    }
+    function distance() { return Math.max(0, track.offsetWidth - inner()); }
+    // Si la sección no cabe completa bajo el encabezado, se queda en su versión normal
+    if (!distance() || fig.offsetHeight > window.innerHeight - headerHeight() - 32) {
+      fig.classList.remove("is-horizontal");
+      return null;
+    }
+
+    var tween = gsap.to(track, {
+      x: function () { return -distance(); },
+      ease: "none",
+      scrollTrigger: {
+        trigger: fig,
+        // Centro del área visible bajo el encabezado
+        start: function () { return "center " + (headerHeight() + (window.innerHeight - headerHeight()) / 2); },
+        end: function () { return "+=" + distance(); },
+        pin: true,
+        scrub: true,
+        invalidateOnRefresh: true
+      }
+    });
+
+    // Si el foco entra a una semana, la página se mueve hasta que esa semana se vea
+    function onFocus(e) {
+      var item = e.target.closest && e.target.closest(".tl-item");
+      var st = tween.scrollTrigger;
+      if (!item || !st) return;
+      var offset = Math.min(distance(), Math.max(0, item.offsetLeft - 24));
+      window.scrollTo(0, st.start + offset);
+    }
+    fig.addEventListener("focusin", onFocus);
+
+    return function () {
+      fig.removeEventListener("focusin", onFocus);
+      fig.classList.remove("is-horizontal");
+    };
+  }
+
+  /* Grupos UVM: cada tarjeta se queda arriba (position: sticky) y la siguiente
+     se le encima; la de abajo se reduce un poco al quedar cubierta. */
+  var STACK_STEP = 52; // igual que en styles.css: deja ver nombre y clave
+
+  function stackedGroups(gsap, ScrollTrigger) {
+    var first = document.querySelector(".map-leaves .group-card");
+    if (!first) return null;
+    var list = first.parentNode;
+    var cards = Array.prototype.slice.call(list.querySelectorAll(".group-card"));
+    if (cards.length < 2) return null;
+
+    function stuckTop(i) { return headerHeight() + 24 + i * STACK_STEP; }
+    var tallest = Math.max.apply(null, cards.map(function (c) { return c.offsetHeight; }));
+    if (stuckTop(cards.length - 1) + tallest > window.innerHeight - 16) return null;
+
+    list.classList.add("is-stacked");
+    list.style.setProperty("--stack-n", cards.length);
+    list.style.setProperty("--stack-h", tallest + "px");
+    cards.forEach(function (c, i) { c.style.setProperty("--stack-i", i); });
+
+    // Posición natural de cada tarjeta dentro de la lista (sin contar lo fijo)
+    function naturalTop(i) {
+      var top = parseFloat(getComputedStyle(list).paddingTop);
+      for (var k = 0; k < i; k++) top += cards[k].offsetHeight + parseFloat(getComputedStyle(cards[k]).marginBottom);
+      return top;
+    }
+    function listTop() { return list.getBoundingClientRect().top + window.pageYOffset; }
+
+    cards.slice(0, -1).forEach(function (card, i) {
+      gsap.fromTo(card, { scale: 1 }, {
+        scale: 0.95,
+        ease: "none",
+        scrollTrigger: {
+          trigger: list,
+          // Empieza cuando la siguiente toca el borde inferior de esta y termina cuando ya la cubrió
+          start: function () { return listTop() + naturalTop(i + 1) - stuckTop(i) - card.offsetHeight; },
+          end: function () { return listTop() + naturalTop(i + 1) - stuckTop(i + 1); },
+          scrub: true,
+          invalidateOnRefresh: true
+        }
+      });
+    });
+
+    return function () {
+      list.classList.remove("is-stacked");
+      list.style.removeProperty("--stack-n");
+      list.style.removeProperty("--stack-h");
+      cards.forEach(function (c) { c.style.removeProperty("--stack-i"); });
+    };
+  }
+
+  /* Botones magnéticos y punto que sigue al cursor. El punto no recibe clics
+     y no oculta el cursor del sistema. Los controles del simulacro, del
+     autodiagnóstico y de las demás herramientas no se mueven. */
+  var TOOLS = "[data-simulacro], [data-diagnostico], [data-planificador], [data-checklist], .quiz";
+
+  function pointerEffects(gsap) {
+    var off = [];
+    function on(target, type, fn, opts) {
+      target.addEventListener(type, fn, opts);
+      off.push(function () { target.removeEventListener(type, fn, opts); });
+    }
+    function isMouse(e) { return !e.pointerType || e.pointerType === "mouse"; }
+
+    var dot = el("div", "cursor-dot");
+    dot.setAttribute("aria-hidden", "true");
+    document.body.appendChild(dot);
+    var dotX = gsap.quickTo(dot, "x", { duration: 0.18, ease: "power3.out" });
+    var dotY = gsap.quickTo(dot, "y", { duration: 0.18, ease: "power3.out" });
+    var visible = false;
+
+    on(window, "pointermove", function (e) {
+      if (!isMouse(e)) return;
+      if (!visible) {
+        gsap.set(dot, { x: e.clientX, y: e.clientY });
+        gsap.to(dot, { opacity: 1, duration: 0.2 });
+        visible = true;
+      }
+      dotX(e.clientX);
+      dotY(e.clientY);
+    }, { passive: true });
+    on(document.documentElement, "pointerleave", function () {
+      visible = false;
+      gsap.to(dot, { opacity: 0, duration: 0.2 });
+    });
+    // Sobre enlaces y botones el punto crece un poco (no dentro de las herramientas)
+    on(document, "pointerover", function (e) {
+      if (!isMouse(e) || !e.target.closest) return;
+      var hot = e.target.closest("a, button") && !e.target.closest(TOOLS);
+      gsap.to(dot, { scale: hot ? 2 : 1, opacity: hot ? 0.7 : 1, duration: 0.25, ease: EASE_OUT, overwrite: "auto" });
+    });
+
+    // Magnético: el botón se inclina hacia el puntero (máx. 10 px) con la
+    // propiedad translate, así no choca con el scale(0.97) de :active
+    var magnets = Array.prototype.filter.call(document.querySelectorAll(".cta .btn, .pager-link"), function (b) {
+      return !b.closest(TOOLS);
+    });
+    magnets.forEach(function (b) {
+      var pos = { x: 0, y: 0 };
+      function render() { b.style.translate = pos.x.toFixed(2) + "px " + pos.y.toFixed(2) + "px"; }
+      var toX = gsap.quickTo(pos, "x", { duration: 0.4, ease: "power3.out", onUpdate: render });
+      var toY = gsap.quickTo(pos, "y", { duration: 0.4, ease: "power3.out", onUpdate: render });
+      on(b, "pointermove", function (e) {
+        if (!isMouse(e)) return;
+        var r = b.getBoundingClientRect();
+        toX(gsap.utils.clamp(-10, 10, (e.clientX - (r.left + r.width / 2)) * 0.25));
+        toY(gsap.utils.clamp(-6, 6, (e.clientY - (r.top + r.height / 2)) * 0.3));
+      });
+      on(b, "pointerleave", function () { toX(0); toY(0); });
+      off.push(function () { b.style.translate = ""; });
+    });
+
+    return function () {
+      off.forEach(function (fn) { fn(); });
+      if (dot.parentNode) dot.parentNode.removeChild(dot);
+    };
   }
 
   // Cinta de datos: botón para detenerla (sirve con teclado y en celular,
