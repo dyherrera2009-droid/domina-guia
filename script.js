@@ -95,6 +95,7 @@
       heroMotion(gsap);
       structureMotion(gsap);
       photoMotion(gsap);
+      groupsMotion(gsap);
       // Las líneas de los títulos se miden con la fuente final ya cargada
       whenFontsReady(function () {
         context.add(function () { stopTitles = titleMotion(gsap); });
@@ -111,12 +112,8 @@
     // y con alto suficiente para que la sección fija quepa completa
     mm.add("(min-width: 900px) and (min-height: 560px) and (prefers-reduced-motion: no-preference)", function () {
       var stopPlan = horizontalPlan(gsap, ScrollTrigger);
-      var stopStack = stackedGroups(gsap, ScrollTrigger);
       ScrollTrigger.sort();
-      return function () {
-        if (stopPlan) stopPlan();
-        if (stopStack) stopStack();
-      };
+      return stopPlan;
     });
 
     // Botones magnéticos y punto que sigue al cursor: solo con mouse o trackpad
@@ -466,61 +463,33 @@
     };
   }
 
-  /* Grupos UVM: cada tarjeta se queda arriba (position: sticky) y la siguiente
-     se le encima; la de abajo se reduce un poco al quedar cubierta. */
-  var STACK_STEP = 52; // igual que en styles.css: deja ver nombre y clave
-
-  function stackedGroups(gsap, ScrollTrigger) {
-    var first = document.querySelector(".map-leaves .group-card");
-    if (!first) return null;
-    var list = first.parentNode;
-    var cards = Array.prototype.slice.call(list.querySelectorAll(".group-card"));
-    if (cards.length < 2) return null;
-
-    function stuckTop(i) { return headerHeight() + 24 + i * STACK_STEP; }
-    var tallest = Math.max.apply(null, cards.map(function (c) { return c.offsetHeight; }));
-    if (stuckTop(cards.length - 1) + tallest > window.innerHeight - 16) return null;
-
-    list.classList.add("is-stacked");
-    list.style.setProperty("--stack-n", cards.length);
-    list.style.setProperty("--stack-h", tallest + "px");
-    cards.forEach(function (c, i) { c.style.setProperty("--stack-i", i); });
-
-    // Posición natural de cada tarjeta dentro de la lista (sin contar lo fijo)
-    function naturalTop(i) {
-      var top = parseFloat(getComputedStyle(list).paddingTop);
-      for (var k = 0; k < i; k++) top += cards[k].offsetHeight + parseFloat(getComputedStyle(cards[k]).marginBottom);
-      return top;
-    }
-    function listTop() { return list.getBoundingClientRect().top + window.pageYOffset; }
-
-    cards.slice(0, -1).forEach(function (card, i) {
-      gsap.fromTo(card, { scale: 1 }, {
-        scale: 0.95,
-        ease: "none",
-        scrollTrigger: {
-          trigger: list,
-          // Empieza cuando la siguiente toca el borde inferior de esta y termina cuando ya la cubrió
-          start: function () { return listTop() + naturalTop(i + 1) - stuckTop(i) - card.offsetHeight; },
-          end: function () { return listTop() + naturalTop(i + 1) - stuckTop(i + 1); },
-          scrub: true,
-          invalidateOnRefresh: true
-        }
-      });
+  // Grupos UVM: entrada escalonada simple al aparecer; el mapa no cambia
+  function groupsMotion(gsap) {
+    var cards = gsap.utils.toArray(".map-leaves .group-card");
+    if (!cards.length) return;
+    gsap.from(cards, {
+      opacity: 0, y: 16, duration: 0.45, stagger: 0.09, ease: EASE_OUT,
+      clearProps: "opacity,transform",
+      scrollTrigger: { trigger: cards[0].parentNode, start: "top 85%", once: true }
     });
-
-    return function () {
-      list.classList.remove("is-stacked");
-      list.style.removeProperty("--stack-n");
-      list.style.removeProperty("--stack-h");
-      cards.forEach(function (c) { c.style.removeProperty("--stack-i"); });
-    };
   }
 
   /* Botones magnéticos y punto que sigue al cursor. El punto no recibe clics
-     y no oculta el cursor del sistema. Los controles del simulacro, del
-     autodiagnóstico y de las demás herramientas no se mueven. */
+     y no oculta el cursor del sistema. Sobre algunos elementos muestra una
+     palabra corta de lo que se puede hacer; ningún control cambia. */
   var TOOLS = "[data-simulacro], [data-diagnostico], [data-planificador], [data-checklist], .quiz";
+  var ACTIONS = [
+    [".quiz-option, .sim-options label", "Responder"],
+    [".v-timeline.is-horizontal", "Desliza"],
+    ['a[href^="http"]', "Abrir"]
+  ];
+
+  function actionFor(node) {
+    for (var i = 0; i < ACTIONS.length; i++) {
+      if (node.closest(ACTIONS[i][0])) return ACTIONS[i][1];
+    }
+    return "";
+  }
 
   function pointerEffects(gsap) {
     var off = [];
@@ -530,32 +499,48 @@
     }
     function isMouse(e) { return !e.pointerType || e.pointerType === "mouse"; }
 
-    var dot = el("div", "cursor-dot");
-    dot.setAttribute("aria-hidden", "true");
-    document.body.appendChild(dot);
-    var dotX = gsap.quickTo(dot, "x", { duration: 0.18, ease: "power3.out" });
-    var dotY = gsap.quickTo(dot, "y", { duration: 0.18, ease: "power3.out" });
+    var cursor = el("div", "cursor");
+    cursor.setAttribute("aria-hidden", "true");
+    var dot = el("span", "cursor-dot");
+    var label = el("span", "cursor-label");
+    cursor.appendChild(dot);
+    cursor.appendChild(label);
+    document.body.appendChild(cursor);
+    var toX = gsap.quickTo(cursor, "x", { duration: 0.18, ease: "power3.out" });
+    var toY = gsap.quickTo(cursor, "y", { duration: 0.18, ease: "power3.out" });
     var visible = false;
+    var current = null;
 
     on(window, "pointermove", function (e) {
       if (!isMouse(e)) return;
       if (!visible) {
-        gsap.set(dot, { x: e.clientX, y: e.clientY });
-        gsap.to(dot, { opacity: 1, duration: 0.2 });
+        gsap.set(cursor, { x: e.clientX, y: e.clientY });
+        gsap.to(cursor, { opacity: 1, duration: 0.2 });
         visible = true;
       }
-      dotX(e.clientX);
-      dotY(e.clientY);
+      toX(e.clientX);
+      toY(e.clientY);
     }, { passive: true });
     on(document.documentElement, "pointerleave", function () {
       visible = false;
-      gsap.to(dot, { opacity: 0, duration: 0.2 });
+      gsap.to(cursor, { opacity: 0, duration: 0.2 });
     });
-    // Sobre enlaces y botones el punto crece un poco (no dentro de las herramientas)
+
+    // Qué hay debajo: término del glosario (crece), acción (etiqueta) o enlace/botón
     on(document, "pointerover", function (e) {
       if (!isMouse(e) || !e.target.closest) return;
-      var hot = e.target.closest("a, button") && !e.target.closest(TOOLS);
-      gsap.to(dot, { scale: hot ? 2 : 1, opacity: hot ? 0.7 : 1, duration: 0.25, ease: EASE_OUT, overwrite: "auto" });
+      var t = e.target;
+      var state = t.closest(".term") ? "term" : (actionFor(t) || (t.closest("a, button") && !t.closest(TOOLS) ? "hot" : ""));
+      if (state === current) return;
+      current = state;
+      var word = state && state !== "term" && state !== "hot" ? state : "";
+      if (word) label.textContent = word;
+      cursor.classList.toggle("is-grown", state === "term" || state === "hot");
+      gsap.to(dot, {
+        scale: state === "term" ? 2.6 : state === "hot" ? 2 : 1,
+        duration: 0.25, ease: EASE_OUT, overwrite: "auto"
+      });
+      gsap.to(label, { opacity: word ? 1 : 0, x: word ? 0 : -6, duration: 0.2, ease: EASE_OUT, overwrite: "auto" });
     });
 
     // Magnético: el botón se inclina hacia el puntero (máx. 10 px) con la
@@ -566,22 +551,185 @@
     magnets.forEach(function (b) {
       var pos = { x: 0, y: 0 };
       function render() { b.style.translate = pos.x.toFixed(2) + "px " + pos.y.toFixed(2) + "px"; }
-      var toX = gsap.quickTo(pos, "x", { duration: 0.4, ease: "power3.out", onUpdate: render });
-      var toY = gsap.quickTo(pos, "y", { duration: 0.4, ease: "power3.out", onUpdate: render });
+      var mx = gsap.quickTo(pos, "x", { duration: 0.4, ease: "power3.out", onUpdate: render });
+      var my = gsap.quickTo(pos, "y", { duration: 0.4, ease: "power3.out", onUpdate: render });
       on(b, "pointermove", function (e) {
         if (!isMouse(e)) return;
         var r = b.getBoundingClientRect();
-        toX(gsap.utils.clamp(-10, 10, (e.clientX - (r.left + r.width / 2)) * 0.25));
-        toY(gsap.utils.clamp(-6, 6, (e.clientY - (r.top + r.height / 2)) * 0.3));
+        mx(gsap.utils.clamp(-10, 10, (e.clientX - (r.left + r.width / 2)) * 0.25));
+        my(gsap.utils.clamp(-6, 6, (e.clientY - (r.top + r.height / 2)) * 0.3));
       });
-      on(b, "pointerleave", function () { toX(0); toY(0); });
+      on(b, "pointerleave", function () { mx(0); my(0); });
       off.push(function () { b.style.translate = ""; });
     });
 
     return function () {
       off.forEach(function (fn) { fn(); });
-      if (dot.parentNode) dot.parentNode.removeChild(dot);
+      if (cursor.parentNode) cursor.parentNode.removeChild(cursor);
     };
+  }
+
+  /* ---------- Glosario ----------
+     Marca la primera aparición de cada término por página (en párrafos y
+     listas del contenido) como un botón. La definición es la que ya trae la
+     página en .glossary-defs, copiada literal del texto del sitio.
+     - Mouse: al pasar el puntero, la tarjeta aparece junto al cursor y se
+       puede pasar el puntero sobre ella.
+     - Teclado y tacto: se muestra al enfocar o tocar el término; Esc o tocar
+       fuera la cierran.
+     - Lectores de pantalla: el botón tiene la definición como descripción. */
+  var GLOSSARY = [
+    ["ceneval", /\bCeneval\b/],
+    ["sustentante", /\bsustentantes?\b/],
+    ["propedeutico", /\bcomponente propedéutico\b/i],
+    ["disciplinares", /\bmódulos? disciplinar(?:es)?\b/i],
+    ["transversales", /\bmódulos transversales\b/i],
+    ["redaccion", /\bredacción indirecta\b/i],
+    ["b1", /\bnivel B1\b/]
+  ];
+  // Donde no se marca: títulos, enlaces, controles, herramientas, visuales,
+  // tablas, cinta, referencias, encabezado, pie y cabecera
+  var GLOSSARY_SKIP = "h1, h2, h3, h4, a, button, label, legend, summary, th, td, caption, figure, table, .visual, .tool, " +
+    ".quiz, [data-simulacro], [data-diagnostico], [data-planificador], [data-checklist], .marquee, .refs, .colophon, " +
+    ".site-header, .site-footer, .hero, .pager, .sr-only, .photo, [aria-hidden=\"true\"]";
+
+  function initGlossary() {
+    var defsBox = document.querySelector(".glossary-defs");
+    var main = document.querySelector("main");
+    if (!defsBox || !main) return;
+    var hoverMQ = window.matchMedia ? window.matchMedia("(hover: hover) and (pointer: fine)") : null;
+
+    var card = el("div", "gloss-card");
+    card.setAttribute("aria-hidden", "true");
+    card.hidden = true;
+    var cardTitle = el("strong");
+    var cardText = el("p");
+    card.appendChild(cardTitle);
+    card.appendChild(cardText);
+    document.body.appendChild(card);
+    // Región que anuncia la definición al tocar o activar el término
+    var live = el("div", "sr-only");
+    live.setAttribute("role", "status");
+    document.body.appendChild(live);
+
+    var openBtn = null;
+    var hideTimer = null;
+
+    function fill(btn) {
+      var def = document.getElementById(btn.getAttribute("aria-describedby"));
+      cardTitle.textContent = def.getAttribute("data-term");
+      cardText.textContent = def.textContent;
+    }
+    function place(x, y, below) {
+      // x, y en coordenadas de la página; nunca se sale del ancho visible
+      card.hidden = false;
+      var w = card.offsetWidth, h = card.offsetHeight;
+      var docW = document.documentElement.clientWidth;
+      var left = Math.max(16, Math.min(x, docW - w - 16));
+      var top = y;
+      if (!below && y - window.pageYOffset + h > window.innerHeight - 8) top = y - h - 40;
+      card.style.left = left + "px";
+      card.style.top = Math.max(window.pageYOffset + 8, top) + "px";
+    }
+    function show(btn, how, e) {
+      clearTimeout(hideTimer);
+      if (openBtn && openBtn !== btn) openBtn.setAttribute("aria-expanded", "false");
+      openBtn = btn;
+      fill(btn);
+      if (how === "pointer" && e) {
+        place(e.pageX + 16, e.pageY + 22, false);
+      } else {
+        var r = btn.getBoundingClientRect();
+        place(r.left + window.pageXOffset, r.bottom + window.pageYOffset + 8, true);
+      }
+    }
+    function hide() {
+      clearTimeout(hideTimer);
+      card.hidden = true;
+      if (openBtn) openBtn.setAttribute("aria-expanded", "false");
+      openBtn = null;
+    }
+
+    // Marca la primera aparición de cada término
+    GLOSSARY.forEach(function (entry) {
+      var key = entry[0], re = entry[1];
+      var def = document.getElementById("def-" + key);
+      if (!def) return;
+      var walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, {
+        acceptNode: function (n) {
+          var p = n.parentElement;
+          // Los nodos de rama del mapa conceptual sí se marcan (son texto, no controles)
+          var mapNode = p && p.closest(".v-map .map-node");
+          if (!p || (!mapNode && p.closest(GLOSSARY_SKIP)) || !p.closest("p, li")) return NodeFilter.FILTER_REJECT;
+          // No en la frase que ya trae la definición
+          var block = p.closest("p, li");
+          if (block.textContent.replace(/\s+/g, " ").indexOf(def.textContent.slice(0, 60)) !== -1) return NodeFilter.FILTER_REJECT;
+          return re.test(n.data) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        }
+      });
+      var node;
+      while ((node = walker.nextNode())) {
+        var m = re.exec(node.data);
+        // No dentro de una cita, como "(Ceneval, 2023)" o "[Ceneval]"
+        var before = node.data.charAt(m.index - 1), after = node.data.charAt(m.index + m[0].length);
+        if (before === "(" || before === "[" || after === "]") continue;
+        var rest = node.splitText(m.index);
+        rest.splitText(m[0].length);
+        var btn = el("button", "term", m[0]);
+        btn.type = "button";
+        btn.setAttribute("aria-describedby", "def-" + key);
+        btn.setAttribute("aria-expanded", "false");
+        rest.parentNode.replaceChild(btn, rest);
+        break;
+      }
+    });
+
+    main.addEventListener("click", function (e) {
+      var btn = e.target.closest && e.target.closest(".term");
+      if (!btn) return;
+      if (openBtn === btn && btn.getAttribute("aria-expanded") === "true") {
+        hide();
+        return;
+      }
+      show(btn, "anchor");
+      btn.setAttribute("aria-expanded", "true");
+      live.textContent = "";
+      setTimeout(function () { live.textContent = cardTitle.textContent + ": " + cardText.textContent; }, 50);
+    });
+    main.addEventListener("focusin", function (e) {
+      var btn = e.target.closest && e.target.closest(".term");
+      if (btn) show(btn, "anchor");
+    });
+    main.addEventListener("focusout", function (e) {
+      if (e.target.closest && e.target.closest(".term")) hide();
+    });
+    // Mouse: aparece junto al cursor; se mantiene si el puntero pasa a la tarjeta
+    main.addEventListener("pointerover", function (e) {
+      if (e.pointerType !== "mouse" || !(hoverMQ && hoverMQ.matches)) return;
+      var btn = e.target.closest && e.target.closest(".term");
+      if (btn && btn !== openBtn) show(btn, "pointer", e);
+      else if (btn) clearTimeout(hideTimer);
+    });
+    main.addEventListener("pointerout", function (e) {
+      if (e.pointerType !== "mouse") return;
+      var btn = e.target.closest && e.target.closest(".term");
+      if (!btn || btn.contains(e.relatedTarget) || btn.getAttribute("aria-expanded") === "true" || document.activeElement === btn) return;
+      hideTimer = setTimeout(hide, 300);
+    });
+    card.addEventListener("pointerenter", function () { clearTimeout(hideTimer); });
+    card.addEventListener("pointerleave", function () {
+      if (openBtn && openBtn.getAttribute("aria-expanded") !== "true" && document.activeElement !== openBtn) hideTimer = setTimeout(hide, 200);
+    });
+    // Esc o tocar/hacer clic fuera la cierran
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !card.hidden) hide();
+    });
+    document.addEventListener("pointerdown", function (e) {
+      if (card.hidden || !e.target.closest) return;
+      if (e.target.closest(".term") || e.target.closest(".gloss-card")) return;
+      hide();
+    });
+    window.addEventListener("resize", hide);
   }
 
   // Cinta de datos: botón para detenerla (sirve con teclado y en celular,
@@ -1347,6 +1495,7 @@
     safe(function () {
       Array.prototype.forEach.call(document.querySelectorAll("[data-marquee]"), initMarquee);
     });
+    safe(initGlossary);
     safe(initMotion);
   });
 })();
