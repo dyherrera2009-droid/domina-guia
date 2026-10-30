@@ -2179,3 +2179,139 @@ main:focus { outline: none; }
   .table-wrap th,
   .table-wrap td { padding: 10px 12px; }
 }
+
+/* ==========================================================
+   REDISEÑO · Revista
+   Cabecera a pantalla completa, el equipo como colofón y cada
+   sección en una franja a todo lo ancho con el título en su columna.
+   ========================================================== */
+:root { --band-alt: #E7EDF5; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --band-alt: #15213A; }
+}
+:root[data-theme="dark"] { --band-alt: #15213A; }
+
+/* Cabecera de página */
+.hero.hero-full {
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(300px, 44vh, 500px);
+  padding: clamp(48px, 8vw, 96px) 0 clamp(40px, 6vw, 72px);
+}
+.hero-full::after { display: none; }
+.hero-full .hero-inner { position: relative; z-index: 1; width: 100%; }
+.hero-full h1 {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  max-width: 16ch;
+}
+.hero-full h1::after { width: 96px; height: 6px; margin-top: 24px; }
+.hero-full .byline { margin-bottom: 0; }
+.hero-full .hero-subtitle {
+  margin: 16px 0 0;
+  max-width: 32ch;
+  color: #FFFFFF;
+  font-size: clamp(1.25rem, 2.6vw, 1.625rem);
+}
+
+/* Portada: la foto ocupa la cabecera; se deja ver el inicio del contenido */
+.hero-full.has-bg {
+  min-height: min(calc(100svh - var(--header-h) - 120px), 760px);
+  background: #081426;
+}
+.hero-bg { position: absolute; inset: 0; z-index: 0; }
+.hero-bg img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%; }
+.hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Velo marino: el texto siempre queda sobre la parte más oscura */
+  background: linear-gradient(to top, rgba(8, 20, 38, 0.95) 0%, rgba(8, 20, 38, 0.88) 50%, rgba(8, 20, 38, 0.55) 100%);
+}
+:root[data-theme="dark"] .hero-bg img { filter: brightness(0.9); }
+.hero-credit { margin: 24px 0 0; font-size: 1rem; color: #E7EDF5; }
+.hero-credit a { color: #FFFFFF; }
+@media (min-width: 900px) {
+  .hero-credit { position: absolute; right: 16px; bottom: 0; margin: 0; }
+}
+
+/* Colofón del equipo */
+.colophon { background: var(--band-alt); padding: clamp(40px, 6vw, 72px) 0; }
+.colophon .team-card { max-width: none; padding: 0; background: none; border: 0; border-radius: 0; }
+.colophon .team-label { margin-bottom: 16px; color: var(--ink); font-size: clamp(1.5rem, 3vw, 2rem); }
+.colophon .team-list,
+.colophon .member-sec { color: var(--text); }
+.colophon .team-list strong,
+.colophon .member-name { color: var(--ink); }
+.colophon .member-list li { border-left-color: var(--amber-border); }
+@media (min-width: 900px) {
+  .colophon .team-card { max-width: none; }
+  .colophon .member-list { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px 24px; }
+}
+
+/* Franjas por sección */
+.band { padding: clamp(56px, 8vw, 112px) 0; }
+.band-plain { background: var(--bg); }
+.band-alt { background: var(--band-alt); }
+
+/* Franja destacada: usa los colores del modo oscuro en cualquier tema */
+.band-dark {
+  background: #0F2A4A;
+  color: #E4EAF3;
+  color-scheme: dark;
+  --navy-soft: #24344F; --amber-soft: #3A2F10; --amber-border: #F2A900; --amber-dark: #FFC233;
+  --bg: #0B1422; --surface: #15213A; --text: #E4EAF3; --muted: #AEBBCD;
+  --border: #2B3C58; --border-strong: #7189AD; --link: #8DB9F5;
+  --ok: #6BD69A; --ok-soft: #12301F; --bad: #FF8F85; --bad-soft: #3A1715;
+  --ink: #D6E4F7; --on-ink: #0B1422; --brand: #1A3D63; --brand-2: #2B5A8C;
+  --zebra: #18263F; --hover-bg: #1A2944;
+  --seg1-bg: #9DBDEB; --seg1-fg: #0B1422; --seg2-bg: #5C8DCC; --seg2-fg: #0B1422;
+  --seg2-stripe: rgba(255, 255, 255, 0.18);
+  --track: #2B3C58; --bar: #9DBDEB; --bar-2: #6E9BD8;
+  --watermark: rgba(214, 228, 247, 0.06);
+  --on-ok: #0B1422; --on-bad: #0B1422;
+}
+:root[data-theme="dark"] .band-dark { background: #102844; }
+.band-dark :focus-visible { outline-color: var(--ink); }
+
+.band-inner { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.band-inner > * { min-width: 0; }
+
+/* Título de sección fijo en su columna (4/12) solo desde 1100 px */
+@media (min-width: 1100px) {
+  .band-inner { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 64px; align-items: start; }
+  .band-inner-single { grid-template-columns: minmax(0, 1fr); }
+  .band-head { position: sticky; top: calc(var(--header-h) + 32px); }
+}
+
+.band h2 {
+  display: block;
+  margin: 0;
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.band .h2-icon {
+  display: flex;
+  width: 52px; height: 52px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background: var(--amber);
+  color: var(--on-amber);
+}
+.band-body > p,
+.band-body > ul,
+.band-body > ol { max-width: 70ch; }
+.band-inner-single .band-body { max-width: 80ch; }
+
+/* Mismo lenguaje para visuales, reactivos y herramientas dentro de las franjas */
+.band .visual,
+.band .quiz,
+.band .sim-item { background: var(--surface); }
+.band .quiz-stem { background: var(--bg); }
+.band-alt .table-wrap { background: var(--surface); }
+.band .tool:first-child,
+.band .visual:first-child { margin-top: 0; }
+
+.pager.container-wide { margin-top: clamp(40px, 6vw, 64px); }

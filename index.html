@@ -53,12 +53,20 @@
   </header>
 
   <main id="contenido" tabindex="-1">
-    <div class="hero">
-      <div class="container">
+    <div class="hero hero-full has-bg">
+        <div class="hero-bg">
+          <img src="img/portada-800.webp" srcset="img/portada-800.webp 800w, img/portada-1600.webp 1600w" sizes="100vw" width="1600" height="1067" alt="Estudiante resolviendo una hoja de examen con lápiz sobre un pupitre." decoding="async" fetchpriority="high">
+        </div>
+      <div class="container-wide hero-inner">
         <h1>Domina el DOMINA</h1>
         <p class="byline">Sección elaborada por: <strong>Dylan David Herrera Sánchez</strong></p>
         <p class="hero-subtitle">Guía práctica para entender y aprobar el examen DOMINA-BACH Avanzado</p>
-        <div class="team-card" role="group" aria-labelledby="datos-equipo">
+        <p class="photo-credit hero-credit">Foto de <a href="https://unsplash.com/photos/oXV3bzR7jxI" target="_blank" rel="noopener noreferrer">Ben Mullins<span class="sr-only"> (se abre en una pestaña nueva)</span></a> (2018) en <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash<span class="sr-only"> (se abre en una pestaña nueva)</span></a></p>
+      </div>
+    </div>
+    <section class="colophon" aria-labelledby="datos-equipo">
+      <div class="container-wide">
+        <div class="team-card">
           <p class="team-label" id="datos-equipo">Datos del equipo</p>
           <ul class="team-list">
             <li><strong>Equipo:</strong> Los Sustentantes</li>
@@ -82,23 +90,25 @@
             <li>Periodo Otoño 2026</li>
           </ul>
         </div>
-        <figure class="photo photo-hero">
-          <img src="img/portada-800.webp" srcset="img/portada-800.webp 800w, img/portada-1600.webp 1600w" sizes="(max-width: 591px) calc(100vw - 32px), 560px" width="1600" height="1067" alt="Estudiante resolviendo una hoja de examen con lápiz sobre un pupitre." decoding="async" fetchpriority="high">
-          <figcaption class="photo-credit">Foto de <a href="https://unsplash.com/photos/oXV3bzR7jxI" target="_blank" rel="noopener noreferrer">Ben Mullins<span class="sr-only"> (se abre en una pestaña nueva)</span></a> (2018) en <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash<span class="sr-only"> (se abre en una pestaña nueva)</span></a></figcaption>
-        </figure>
       </div>
-    </div>
-    <div class="container page-body">
-      <section class="card" id="por-que-diagnosticar" aria-labelledby="por-que-diagnosticar-titulo">
-        <h2 id="por-que-diagnosticar-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Diana</title><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span>¿Por qué diagnosticar nuestras habilidades académicas?</h2>
+    </section>
+    <div class="bands">
+      <section class="band band-plain" id="por-que-diagnosticar" aria-labelledby="por-que-diagnosticar-titulo">
+        <div class="band-inner container-wide">
+          <div class="band-head">
+            <h2 id="por-que-diagnosticar-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Diana</title><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span>¿Por qué diagnosticar nuestras habilidades académicas?</h2>
+          </div>
+          <div class="band-body">
         <p>Un examen diagnóstico no sirve para reprobar a nadie, sirve para saber dónde estamos parados. Cuando conocemos qué temas dominamos y en cuáles fallamos, podemos estudiar con un objetivo claro en lugar de repasar todo al azar.</p>
         <p>La evaluación funciona mejor cuando sus resultados se usan para mejorar. Black y Wiliam (1998) revisaron decenas de estudios y encontraron que la retroalimentación que recibe el estudiante sobre su desempeño es una de las formas más efectivas de elevar el aprendizaje. El DOMINA hace justo eso: le da a cada alumno y a su escuela un reporte por área que muestra fortalezas y puntos débiles antes de entrar a la universidad (Centro Nacional de Evaluación para la Educación Superior [Ceneval], 2023).</p>
         <p>En este sitio vas a encontrar cómo está armado el examen, qué contenidos evalúa, ejemplos de reactivos y estrategias respaldadas por investigación para prepararte.</p>
         <p class="cta"><a class="btn" href="conoce-domina.html">Empezar la guía<svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Flecha a la derecha</title><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></p>
+          </div>
+        </div>
       </section>
     </div>
 
-    <nav class="pager container" aria-label="Navegación entre páginas">
+    <nav class="pager container-wide" aria-label="Navegación entre páginas">
       <span></span>
       <a class="pager-link pager-next" href="conoce-domina.html"><span><span class="pager-label">Siguiente</span><span class="pager-title">Conoce el examen DOMINA</span></span><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Flecha a la derecha</title><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
     </nav>

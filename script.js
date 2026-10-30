@@ -29,7 +29,9 @@
 
   /* ---------- Animaciones: solo si el sistema no pide reducir movimiento ---------- */
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var canAnimate = !reduceMotion && "IntersectionObserver" in window;
+  // Rediseño: las animaciones quedan apagadas hasta la etapa de movimiento.
+  var MOTION_ENABLED = false;
+  var canAnimate = MOTION_ENABLED && !reduceMotion && "IntersectionObserver" in window;
   if (canAnimate) root.classList.add("js-motion");
 
   function initTheme() {
@@ -73,7 +75,7 @@
 
   function initReveal() {
     if (!canAnimate) return;
-    var targets = document.querySelectorAll(".card, .pager");
+    var targets = document.querySelectorAll(".band, .pager");
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
