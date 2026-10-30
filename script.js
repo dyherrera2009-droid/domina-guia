@@ -83,43 +83,248 @@
     var ScrollTrigger = window.ScrollTrigger;
     if (!gsap || !ScrollTrigger) {
       root.classList.remove("js-motion");
+      safe(function () { smoothScroll(null, null); });
       return;
     }
     gsap.registerPlugin(ScrollTrigger);
     var mm = gsap.matchMedia();
 
-    mm.add("(prefers-reduced-motion: no-preference)", function () {
+    mm.add("(prefers-reduced-motion: no-preference)", function (context) {
+      var stopSmooth = smoothScroll(gsap, ScrollTrigger);
+      var stopTitles = null;
       heroMotion(gsap);
       structureMotion(gsap);
-      photoParallax(gsap);
-    });
-
-    // Títulos fijos de sección: solo donde están fijos (desde 1100 px)
-    mm.add("(min-width: 1100px) and (prefers-reduced-motion: no-preference)", function () {
-      gsap.utils.toArray(".band-head h2").forEach(function (h2) {
-        gsap.from(h2, {
-          opacity: 0, y: 16, duration: 0.4, ease: EASE_OUT,
-          scrollTrigger: { trigger: h2.closest(".band"), start: "top 75%", once: true }
-        });
+      photoMotion(gsap);
+      // Las líneas de los títulos se miden con la fuente final ya cargada
+      whenFontsReady(function () {
+        context.add(function () { stopTitles = titleMotion(gsap); });
+        ScrollTrigger.refresh();
       });
+      return function () {
+        if (stopSmooth) stopSmooth();
+        if (stopTitles) stopTitles();
+      };
     });
 
     // Si se cambia a reducir movimiento a mitad de la visita, todo vuelve a su estado final
     mm.add("(prefers-reduced-motion: reduce)", function () {
       root.classList.remove("js-motion");
+      restoreSplits();
     });
   }
 
-  // Portada: entrada escalonada (< 700 ms en total) y parallax de la foto
+  /* Scroll suave con Lenis. Solo suaviza la rueda del mouse y el trackpad:
+     el teclado, el foco y el tacto siguen siendo el scroll del navegador.
+     Si Lenis no carga, no pasa nada. Devuelve la función que lo apaga. */
+  function smoothScroll(gsap, ScrollTrigger) {
+    var Lenis = window.Lenis;
+    if (!Lenis) return null;
+    var lenis = new Lenis({
+      autoRaf: !gsap,
+      allowNestedScroll: true,
+      // El menú desplegable y las tablas con scroll propio usan el scroll normal
+      prevent: function (node) { return !!(node.closest && node.closest(".site-nav, .table-wrap")); }
+    });
+    if (!gsap) return function () { lenis.destroy(); };
+    var tick = function (time) { lenis.raf(time * 1000); };
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(0);
+    return function () {
+      gsap.ticker.remove(tick);
+      gsap.ticker.lagSmoothing(500, 33);
+      lenis.destroy();
+    };
+  }
+
+  // Espera a las fuentes web (máximo 1.5 s) para medir el texto con su forma final
+  function whenFontsReady(fn) {
+    var called = false;
+    function once() {
+      if (called) return;
+      called = true;
+      try {
+        fn();
+      } catch (e) {
+        restoreSplits();
+        if (window.console) window.console.error(e);
+      }
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(once, once);
+    setTimeout(once, 1500);
+    if (!document.fonts) once();
+  }
+
+  /* ---------- Texto dividido para revelar ----------
+     La copia visible se divide en palabras (nunca se parte una) y letras o
+     líneas; la frase completa queda en .sr-only para lectores de pantalla.
+     Al terminar la animación el título vuelve a ser su texto original. */
+  var splits = [];
+
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text != null) node.textContent = text;
+    return node;
+  }
+
+  function splitText(target, textNodes, mode) {
+    var text = textNodes.map(function (n) { return n.data; }).join("").replace(/\s+/g, " ").trim();
+    if (!text) return null;
+    var anchor = textNodes[0];
+    var sr = el("span", "sr-only", text);
+    var visual = el("span", "split-visual");
+    visual.setAttribute("aria-hidden", "true");
+    var words = text.split(" ");
+    var units = [];
+    words.forEach(function (word, i) {
+      var w = el("span", "split-word");
+      if (mode === "chars") {
+        var mask = el("span", "split-mask");
+        Array.prototype.forEach.call(word, function (ch) {
+          var c = el("span", "split-char", ch);
+          mask.appendChild(c);
+          units.push(c);
+        });
+        w.appendChild(mask);
+      } else {
+        w.textContent = word;
+      }
+      visual.appendChild(w);
+      if (i < words.length - 1) visual.appendChild(document.createTextNode(" "));
+    });
+    target.insertBefore(sr, anchor);
+    target.insertBefore(visual, anchor);
+    textNodes.forEach(function (n) { n.parentNode.removeChild(n); });
+
+    if (mode === "lines") {
+      // Agrupa las palabras por la línea en la que cayeron y envuelve cada línea en su máscara
+      var lines = [];
+      var lastTop = null;
+      Array.prototype.forEach.call(visual.querySelectorAll(".split-word"), function (w) {
+        var top = w.offsetTop;
+        if (lastTop === null || Math.abs(top - lastTop) > 2) lines.push([]);
+        lines[lines.length - 1].push(w.textContent);
+        lastTop = top;
+      });
+      visual.textContent = "";
+      visual.className += " split-lines";
+      lines.forEach(function (line) {
+        var outer = el("span", "split-line");
+        var inner = el("span", "split-line-inner", line.join(" "));
+        outer.appendChild(inner);
+        visual.appendChild(outer);
+        units.push(inner);
+      });
+    }
+
+    var record = {
+      units: units,
+      restore: function () {
+        if (!visual.parentNode) return;
+        target.insertBefore(document.createTextNode(text), sr);
+        target.removeChild(sr);
+        target.removeChild(visual);
+      }
+    };
+    splits.push(record);
+    return record;
+  }
+
+  function restoreSplits() {
+    splits.forEach(function (r) { r.restore(); });
+    splits = [];
+  }
+
+  function directText(node) {
+    return Array.prototype.filter.call(node.childNodes, function (n) {
+      return n.nodeType === 3;
+    });
+  }
+
+  // Títulos de sección: línea por línea con máscara al entrar a la pantalla
+  function titleMotion(gsap) {
+    var titles = gsap.utils.toArray(".band-head h2");
+    var pending = [];
+
+    titles.forEach(function (h2) {
+      // Solo títulos con texto simple (ícono + texto); si no, se dejan como están
+      var extra = Array.prototype.some.call(h2.children, function (c) { return !c.classList.contains("h2-icon"); });
+      if (extra || !directText(h2).length) return;
+      var item = { h2: h2, split: null, tween: null, done: false };
+      pending.push(item);
+      build(item);
+    });
+
+    function build(item) {
+      item.split = splitText(item.h2, directText(item.h2), "lines");
+      if (!item.split) return;
+      var icon = item.h2.querySelector(".h2-icon");
+      var tl = gsap.timeline({
+        scrollTrigger: { trigger: item.h2, start: "top 85%", once: true },
+        onComplete: function () {
+          item.done = true;
+          item.split.restore();
+          if (icon) gsap.set(icon, { clearProps: "transform,opacity" });
+        }
+      });
+      if (icon) tl.from(icon, { opacity: 0, scale: 0.6, duration: 0.5, ease: EASE_OUT }, 0);
+      tl.from(item.split.units, { yPercent: 110, duration: 0.8, stagger: 0.1, ease: EASE_OUT }, 0.05);
+      item.tween = tl;
+    }
+
+    // Si cambia el ancho antes de revelarse, las líneas se vuelven a medir
+    var timer = null;
+    var lastWidth = window.innerWidth;
+    function onResize() {
+      if (window.innerWidth === lastWidth) return;
+      lastWidth = window.innerWidth;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        pending.forEach(function (item) {
+          if (item.done || !item.split) return;
+          if (item.tween) {
+            if (item.tween.scrollTrigger) item.tween.scrollTrigger.kill();
+            item.tween.kill();
+          }
+          var icon = item.h2.querySelector(".h2-icon");
+          if (icon) gsap.set(icon, { clearProps: "transform,opacity" });
+          item.split.restore();
+          build(item);
+        });
+        window.ScrollTrigger.refresh();
+      }, 200);
+    }
+    window.addEventListener("resize", onResize);
+
+    return function () {
+      window.removeEventListener("resize", onResize);
+    };
+  }
+
+  // Portada: el título aparece letra por letra y después lo demás (≈ 1 s en total)
   function heroMotion(gsap) {
     var hero = document.querySelector(".hero.has-bg");
     if (!hero) return;
-    var items = hero.querySelectorAll(".hero-anim");
-    // 4 elementos: 0.38 s cada uno + 3 × 0.08 s de escalonado = 0.62 s
-    gsap.fromTo(items, { opacity: 0, y: 16 }, {
+    var h1 = hero.querySelector("h1");
+    var rest = Array.prototype.filter.call(hero.querySelectorAll(".hero-anim"), function (n) { return n !== h1; });
+    var split = h1 ? splitText(h1, directText(h1), "chars") : null;
+
+    var tl = gsap.timeline();
+    if (split) {
+      gsap.set(h1, { opacity: 1 });
+      // 14 letras: 0.5 s cada una + 13 × 0.03 s de escalonado ≈ 0.9 s
+      tl.fromTo(split.units, { yPercent: 110 }, {
+        yPercent: 0, duration: 0.5, stagger: 0.03, ease: EASE_OUT,
+        onComplete: function () { split.restore(); }
+      }, 0);
+    } else if (h1) {
+      rest.unshift(h1);
+    }
+    tl.fromTo(rest, { opacity: 0, y: 16 }, {
       opacity: 1, y: 0, duration: 0.38, stagger: 0.08, ease: EASE_OUT,
       clearProps: "transform"
-    });
+    }, split ? 0.3 : 0);
 
     var img = hero.querySelector(".hero-bg img");
     if (img) {
@@ -166,13 +371,38 @@
     tl.eventCallback("onComplete", function () { counterEl.textContent = String(finalValue); });
   }
 
-  // Fotos de guía y recomendaciones: parallax ligero dentro de su marco
-  function photoParallax(gsap) {
-    gsap.utils.toArray(".band .photo-frame img").forEach(function (img) {
+  // Fotos de guía y recomendaciones: se descubren como cortina al entrar
+  // y después siguen con un parallax ligero dentro de su marco
+  function photoMotion(gsap) {
+    gsap.utils.toArray(".band .photo-frame").forEach(function (frame) {
+      var img = frame.querySelector("img");
+      gsap.fromTo(frame, { clipPath: "inset(0% 0% 100% 0%)" }, {
+        clipPath: "inset(0% 0% 0% 0%)", duration: 1, ease: "power3.inOut",
+        clearProps: "clipPath",
+        scrollTrigger: { trigger: frame, start: "top 85%", once: true }
+      });
+      if (!img) return;
+      gsap.fromTo(img, { scale: 1.12 }, {
+        scale: 1, duration: 1.3, ease: EASE_OUT,
+        scrollTrigger: { trigger: frame, start: "top 85%", once: true }
+      });
       gsap.fromTo(img, { yPercent: 0 }, {
         yPercent: -8, ease: "none",
-        scrollTrigger: { trigger: img.parentNode, start: "top bottom", end: "bottom top", scrub: true }
+        scrollTrigger: { trigger: frame, start: "top bottom", end: "bottom top", scrub: true }
       });
+    });
+  }
+
+  // Cinta de datos: botón para detenerla (sirve con teclado y en celular,
+  // donde no hay mouse que pase por encima)
+  function initMarquee(box) {
+    var btn = box.querySelector(".marquee-toggle");
+    var label = box.querySelector(".marquee-toggle-text");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var paused = box.classList.toggle("is-paused");
+      btn.setAttribute("aria-label", paused ? "Reanudar la cinta de datos" : "Pausar la cinta de datos");
+      if (label) label.textContent = paused ? "Reanudar" : "Pausar";
     });
   }
 
@@ -922,6 +1152,9 @@
     });
     safe(function () {
       Array.prototype.forEach.call(document.querySelectorAll("[data-checklist]"), initChecklist);
+    });
+    safe(function () {
+      Array.prototype.forEach.call(document.querySelectorAll("[data-marquee]"), initMarquee);
     });
     safe(initMotion);
   });

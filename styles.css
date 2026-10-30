@@ -2200,8 +2200,16 @@ main:focus { outline: none; }
 }
 .hero-full::after { display: none; }
 .hero-full .hero-inner { position: relative; z-index: 1; width: 100%; }
+/* Títulos grandes: nunca se parte una palabra. El generador pone en --lw las
+   letras de la palabra más larga y el tamaño baja lo necesario para que quepa
+   completa en su columna (100cqi = ancho de la columna). */
+.hero-inner,
+.band-head { container-type: inline-size; }
+.hero-full h1,
+.band h2 { overflow-wrap: normal; word-break: normal; hyphens: none; }
 .hero-full h1 {
   font-size: clamp(2.5rem, 8vw, 6rem);
+  font-size: clamp(1.75rem, min(max(2.5rem, 8vw), 100cqi / (var(--lw, 10) * 0.7)), 6rem);
   line-height: 1;
   letter-spacing: -0.03em;
   max-width: 16ch;
@@ -2334,6 +2342,7 @@ main:focus { outline: none; }
   display: block;
   margin: 0;
   font-size: clamp(2rem, 3.2vw, 2.75rem);
+  font-size: clamp(1.5rem, min(max(2rem, 3.2vw), 100cqi / (var(--lw, 10) * 0.7)), 2.75rem);
   line-height: 1.05;
   letter-spacing: -0.02em;
 }
@@ -2379,3 +2388,125 @@ main:focus { outline: none; }
   background: var(--navy-soft);
 }
 .photo .photo-frame img { border: 0; border-radius: 0; }
+
+/* ==========================================================
+   EFECTOS · Tanda 1
+   Scroll suave (Lenis), títulos que se revelan, cinta de datos y fotos
+   con cortina. Sin JavaScript, sin GSAP/Lenis o con movimiento reducido,
+   todo queda en su estado final y el scroll es el del navegador.
+   ========================================================== */
+/* Lenis (mismas reglas que su lenis.css) */
+html.lenis,
+html.lenis body { height: auto; }
+.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+/* Texto dividido para animar: la frase completa queda en .sr-only y la copia
+   visible se oculta a lectores de pantalla. Las palabras nunca se parten. */
+.split-word { display: inline-block; white-space: nowrap; }
+.split-mask { display: inline-block; overflow: hidden; padding-bottom: 0.12em; margin-bottom: -0.12em; vertical-align: top; }
+.split-char { display: inline-block; }
+/* Contexto de bloque propio: el margen negativo de la última línea no se sale del título */
+.split-lines { display: flow-root; }
+.split-line { display: block; overflow: hidden; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+.split-line-inner { display: block; white-space: nowrap; }
+
+/* Cinta de datos (Conoce el examen) */
+.marquee {
+  display: flex;
+  align-items: center;
+  background: var(--amber);
+  color: var(--on-amber);
+  border-bottom: 1px solid var(--amber-border);
+}
+.marquee-viewport {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 32px, #000 calc(100% - 32px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 32px, #000 calc(100% - 32px), transparent 100%);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 42s linear infinite;
+}
+.marquee-list {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin: 0;
+  padding: 14px 0;
+  list-style: none;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: clamp(1.125rem, 2.2vw, 1.5rem);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.marquee-list li { display: flex; align-items: center; }
+.marquee-dot {
+  width: 8px; height: 8px;
+  margin: 0 clamp(16px, 3vw, 32px);
+  border-radius: 50%;
+  background: currentColor;
+}
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+/* Se detiene con el mouse encima, con el foco dentro o con el botón */
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track,
+.marquee.is-paused .marquee-track { animation-play-state: paused; }
+
+.marquee-toggle {
+  display: none;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin: 0 16px 0 8px;
+  padding: 0 12px;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  background: var(--amber);
+  color: var(--on-amber);
+  font: 700 1rem/1 var(--font-body);
+  cursor: pointer;
+}
+.js .marquee-toggle { display: inline-flex; }
+.marquee-toggle .icon { width: 18px; height: 18px; }
+.marquee-toggle .icon-play,
+.marquee.is-paused .marquee-toggle .icon-pause { display: none; }
+.marquee.is-paused .marquee-toggle .icon-play { display: block; }
+.marquee :focus-visible { outline: 3px solid var(--on-amber); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) {
+  .marquee-toggle:hover { background: var(--on-amber); color: var(--amber); }
+}
+@media (max-width: 480px) {
+  .marquee-toggle-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .marquee-toggle { margin-right: 12px; padding: 0 10px; }
+}
+
+/* Movimiento reducido: la cinta queda fija y muestra todos los datos */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-viewport { -webkit-mask-image: none; mask-image: none; }
+  .marquee-track { width: auto; transform: none; }
+  .marquee-list { flex: 1 1 auto; flex-wrap: wrap; justify-content: center; gap: 8px 0; padding: 14px 16px; white-space: normal; }
+  .marquee-list[aria-hidden="true"],
+  .js .marquee-toggle { display: none; }
+  .marquee-list li:last-child .marquee-dot { display: none; }
+}
+
+@media print {
+  .js-motion .hero-anim { opacity: 1 !important; }
+  .split-char,
+  .split-line-inner,
+  .h2-icon { opacity: 1 !important; transform: none !important; }
+  .photo-frame { clip-path: none !important; }
+  .marquee-track { animation: none; }
+  .marquee-list[aria-hidden="true"],
+  .marquee-toggle { display: none !important; }
+}
+

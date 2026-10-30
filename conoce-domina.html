@@ -26,6 +26,7 @@
   <script src="script.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -57,16 +58,22 @@
   <main id="contenido" tabindex="-1">
     <div class="hero hero-full">
       <div class="container-wide hero-inner">
-        <h1 class="hero-anim">Conoce el examen DOMINA</h1>
+        <h1 class="hero-anim" style="--lw: 6">Conoce el examen DOMINA</h1>
         <span class="hero-rule hero-anim" aria-hidden="true"></span>
         <p class="byline hero-anim">Sección elaborada por: <strong>Antonio Israel Barragán Avilés</strong></p>
       </div>
+    </div>
+    <div class="marquee" data-marquee>
+      <div class="marquee-viewport">
+        <div class="marquee-track"><ul class="marquee-list" aria-label="El examen en cifras"><li>150 reactivos<span class="marquee-dot" aria-hidden="true"></span></li><li>80 en la Sesión 1<span class="marquee-dot" aria-hidden="true"></span></li><li>70 en la Sesión 2<span class="marquee-dot" aria-hidden="true"></span></li><li>3 opciones por reactivo<span class="marquee-dot" aria-hidden="true"></span></li><li>Inglés nivel B1<span class="marquee-dot" aria-hidden="true"></span></li><li>2 sesiones de 3 horas<span class="marquee-dot" aria-hidden="true"></span></li></ul><ul class="marquee-list" aria-hidden="true"><li>150 reactivos<span class="marquee-dot" aria-hidden="true"></span></li><li>80 en la Sesión 1<span class="marquee-dot" aria-hidden="true"></span></li><li>70 en la Sesión 2<span class="marquee-dot" aria-hidden="true"></span></li><li>3 opciones por reactivo<span class="marquee-dot" aria-hidden="true"></span></li><li>Inglés nivel B1<span class="marquee-dot" aria-hidden="true"></span></li><li>2 sesiones de 3 horas<span class="marquee-dot" aria-hidden="true"></span></li></ul></div>
+      </div>
+      <button class="marquee-toggle" type="button" aria-label="Pausar la cinta de datos"><svg class="icon icon-pause" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Pausa</title><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="icon icon-play" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Reanudar</title><path d="M7 5l12 7-12 7z"/></svg><span class="marquee-toggle-text">Pausar</span></button>
     </div>
     <div class="bands">
       <section class="band band-plain" id="quien-lo-elabora" aria-labelledby="quien-lo-elabora-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="quien-lo-elabora-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Edificio</title><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg></span>¿Quién lo elabora?</h2>
+            <h2 id="quien-lo-elabora-titulo" style="--lw: 8"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Edificio</title><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg></span>¿Quién lo elabora?</h2>
           </div>
           <div class="band-body">
         <p>El Centro Nacional de Evaluación para la Educación Superior, conocido como Ceneval, es una asociación civil. No es una dependencia del gobierno, sino una organización sin fines de lucro que diseña y aplica exámenes. Con ellos mide conocimientos, que es lo que una persona sabe; habilidades, que es lo que sabe hacer, como razonar o comprender un texto; y competencias, que es la capacidad de juntar ambas cosas para resolver una situación real.</p>
@@ -76,7 +83,7 @@
       <section class="band band-alt" id="que-es" aria-labelledby="que-es-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="que-es-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Signo de pregunta</title><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7"/><path d="M12 17h.01"/></svg></span>¿Qué es el DOMINA-BACH?</h2>
+            <h2 id="que-es-titulo" style="--lw: 12"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Signo de pregunta</title><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7"/><path d="M12 17h.01"/></svg></span>¿Qué es el DOMINA-BACH?</h2>
           </div>
           <div class="band-body">
         <p>El DOMINA-BACH es un conjunto de exámenes diagnósticos del Ceneval para el bachillerato. Que sea diagnóstico significa que no sirve para aprobar o reprobar, sino para detectar qué dominan los alumnos y en qué tienen carencias. Tiene dos niveles (Ceneval, 2021, 2023):</p>
@@ -96,7 +103,7 @@
       <section class="band band-plain" id="para-que-sirven" aria-labelledby="para-que-sirven-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="para-que-sirven-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Diana</title><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span>¿Para qué sirven sus resultados?</h2>
+            <h2 id="para-que-sirven-titulo" style="--lw: 11"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Diana</title><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span>¿Para qué sirven sus resultados?</h2>
           </div>
           <div class="band-body">
         <ul class="list">
@@ -110,7 +117,7 @@
       <section class="band band-dark" id="estructura" aria-labelledby="estructura-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="estructura-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Capas</title><path d="M12 3 3 7.5l9 4.5 9-4.5L12 3z"/><path d="M3 12l9 4.5 9-4.5"/><path d="M3 16.5 12 21l9-4.5"/></svg></span>Estructura del examen</h2>
+            <h2 id="estructura-titulo" style="--lw: 10"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Capas</title><path d="M12 3 3 7.5l9 4.5 9-4.5L12 3z"/><path d="M3 12l9 4.5 9-4.5"/><path d="M3 16.5 12 21l9-4.5"/></svg></span>Estructura del examen</h2>
           </div>
           <div class="band-body">
         <p>El examen se divide en dos sesiones.</p>
@@ -153,7 +160,7 @@
       <section class="band band-plain" id="tipos-de-preguntas" aria-labelledby="tipos-de-preguntas-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="tipos-de-preguntas-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Lista</title><path d="M9 6h11"/><path d="M9 12h11"/><path d="M9 18h11"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg></span>Tipos de preguntas</h2>
+            <h2 id="tipos-de-preguntas-titulo" style="--lw: 9"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Lista</title><path d="M9 6h11"/><path d="M9 12h11"/><path d="M9 18h11"/><path d="M4 6h.01"/><path d="M4 12h.01"/><path d="M4 18h.01"/></svg></span>Tipos de preguntas</h2>
           </div>
           <div class="band-body">
         <p>Todos los reactivos son de opción múltiple con tres opciones de respuesta, y solo una es correcta. Tener tres opciones en lugar de cuatro reduce la carga de lectura. Dentro de ese formato aparecen distintos tipos de reactivos (Ceneval, 2021, 2023):</p>
@@ -170,7 +177,7 @@
       <section class="band band-alt" id="duracion-y-formato" aria-labelledby="duracion-y-formato-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="duracion-y-formato-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Reloj</title><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Duración y formato</h2>
+            <h2 id="duracion-y-formato-titulo" style="--lw: 8"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Reloj</title><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Duración y formato</h2>
           </div>
           <div class="band-body">
         <ul class="list">
@@ -186,7 +193,7 @@
       <section class="band band-plain" id="criterios" aria-labelledby="criterios-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="criterios-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Portapapeles</title><path d="M9 3h6v3H9z"/><path d="M7 4.5H5V21h14V4.5h-2"/><path d="M8.5 13.5l2.5 2.5 4.5-5"/></svg></span>Criterios de evaluación</h2>
+            <h2 id="criterios-titulo" style="--lw: 10"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Portapapeles</title><path d="M9 3h6v3H9z"/><path d="M7 4.5H5V21h14V4.5h-2"/><path d="M8.5 13.5l2.5 2.5 4.5-5"/></svg></span>Criterios de evaluación</h2>
           </div>
           <div class="band-body">
         <ul class="list">
@@ -201,7 +208,7 @@
       <section class="band band-alt" id="reporte-individual" aria-labelledby="reporte-individual-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="reporte-individual-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Gráfica de barras</title><path d="M3 20h18"/><path d="M6 20V11"/><path d="M11 20V5"/><path d="M16 20v-7"/></svg></span>Reporte individual de resultados</h2>
+            <h2 id="reporte-individual-titulo" style="--lw: 10"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Gráfica de barras</title><path d="M3 20h18"/><path d="M6 20V11"/><path d="M11 20V5"/><path d="M16 20v-7"/></svg></span>Reporte individual de resultados</h2>
           </div>
           <div class="band-body">
         <p>Cada estudiante recibe un reporte con estos elementos (J. L. González Pensamiento, comunicación personal, 21 de octubre de 2026):</p>
@@ -218,7 +225,7 @@
       <section class="band band-plain" id="reportes-institucionales" aria-labelledby="reportes-institucionales-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="reportes-institucionales-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Personas</title><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20v-1.5A3.5 3.5 0 0 1 7 15h6a3.5 3.5 0 0 1 3.5 3.5V20"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M20.5 20v-1.5a3.5 3.5 0 0 0-2.5-3.35"/></svg></span>Reportes institucionales</h2>
+            <h2 id="reportes-institucionales-titulo" style="--lw: 15"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Personas</title><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20v-1.5A3.5 3.5 0 0 1 7 15h6a3.5 3.5 0 0 1 3.5 3.5V20"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M20.5 20v-1.5a3.5 3.5 0 0 0-2.5-3.35"/></svg></span>Reportes institucionales</h2>
           </div>
           <div class="band-body">
         <p>La escuela recibe listados con todos sus sustentantes en tres tipos de reporte (J. L. González Pensamiento, comunicación personal, 21 de octubre de 2026):</p>

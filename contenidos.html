@@ -26,6 +26,7 @@
   <script src="script.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -57,7 +58,7 @@
   <main id="contenido" tabindex="-1">
     <div class="hero hero-full">
       <div class="container-wide hero-inner">
-        <h1 class="hero-anim">Contenidos del examen</h1>
+        <h1 class="hero-anim" style="--lw: 10">Contenidos del examen</h1>
         <span class="hero-rule hero-anim" aria-hidden="true"></span>
         <p class="byline hero-anim">Sección elaborada por: <strong>Joseph Domínguez Manzo</strong></p>
       </div>
@@ -66,7 +67,7 @@
       <section class="band band-plain" id="areas" aria-labelledby="areas-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="areas-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Cuadrícula</title><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span>Áreas que evalúa</h2>
+            <h2 id="areas-titulo" style="--lw: 6"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Cuadrícula</title><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span>Áreas que evalúa</h2>
           </div>
           <div class="band-body">
         <p>El examen evalúa dos tipos de módulos. Los módulos disciplinares miden los conocimientos específicos de cuatro asignaturas del componente propedéutico, que son las materias del área que eligió cada alumno. Los módulos transversales miden comprensión lectora y redacción indirecta en español y en inglés, y los presentan todos los estudiantes sin importar su área.</p>
@@ -77,7 +78,7 @@
       <section class="band band-dark" id="modulos-uvm" aria-labelledby="modulos-uvm-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="modulos-uvm-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Edificio</title><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg></span>Módulos que se aplican en la Preparatoria UVM</h2>
+            <h2 id="modulos-uvm-titulo" style="--lw: 12"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Edificio</title><path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg></span>Módulos que se aplican en la Preparatoria UVM</h2>
           </div>
           <div class="band-body">
         <p>En la modalidad Semestral B6, cada grupo del componente propedéutico tiene una clave que sirve para identificar sus cuatro módulos disciplinares:</p>
@@ -138,7 +139,7 @@
       <section class="band band-plain" id="importancia" aria-labelledby="importancia-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="importancia-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Foco</title><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></span>¿Por qué es importante cada área?</h2>
+            <h2 id="importancia-titulo" style="--lw: 10"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Foco</title><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></span>¿Por qué es importante cada área?</h2>
           </div>
           <div class="band-body">
         <ul class="list">
@@ -155,7 +156,7 @@
       <section class="band band-alt" id="ejemplos-de-reactivos" aria-labelledby="ejemplos-de-reactivos-titulo">
         <div class="band-inner container-wide">
           <div class="band-head">
-            <h2 id="ejemplos-de-reactivos-titulo"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Lápiz</title><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg></span>Ejemplos de reactivos</h2>
+            <h2 id="ejemplos-de-reactivos-titulo" style="--lw: 9"><span class="h2-icon"><svg class="icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><title>Lápiz</title><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg></span>Ejemplos de reactivos</h2>
           </div>
           <div class="band-body">
         <p class="notice">Reactivos de práctica elaborados para esta guía con el formato del examen. No son reactivos oficiales del Ceneval.</p>
