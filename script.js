@@ -580,7 +580,6 @@
      - Lectores de pantalla: el botón tiene la definición como descripción. */
   var GLOSSARY = [
     ["ceneval", /\bCeneval\b/],
-    ["sustentante", /\bsustentantes?\b/],
     ["propedeutico", /\bcomponente propedéutico\b/i],
     ["disciplinares", /\bmódulos? disciplinar(?:es)?\b/i],
     ["transversales", /\bmódulos transversales\b/i],
