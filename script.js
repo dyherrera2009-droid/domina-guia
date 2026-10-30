@@ -64,6 +64,13 @@
     updateLabel();
   }
 
+  // Numera las barras de un bloque para que crezcan escalonadas (--i en styles.css).
+  function numberBars(container) {
+    Array.prototype.forEach.call(container.querySelectorAll(".grow"), function (bar, i) {
+      bar.style.setProperty("--i", i);
+    });
+  }
+
   function initReveal() {
     if (!canAnimate) return;
     var targets = document.querySelectorAll(".card, .pager");
@@ -77,6 +84,7 @@
     }, { rootMargin: "0px 0px -40px 0px", threshold: 0.05 });
 
     Array.prototype.forEach.call(targets, function (el) {
+      numberBars(el);
       el.classList.add("reveal");
       observer.observe(el);
     });
@@ -221,7 +229,7 @@
         if (input.checked) keys.push(input.getAttribute("data-key"));
       });
       if (count) count.textContent = String(keys.length);
-      if (bar) bar.style.width = (keys.length / inputs.length * 100) + "%";
+      if (bar) bar.style.transform = "scaleX(" + (keys.length / inputs.length) + ")";
       return keys;
     }
 
@@ -711,6 +719,7 @@
     function animateResults() {
       resultsScreen.classList.remove("reveal", "is-visible");
       if (!root.ownerDocument.documentElement.classList.contains("js-motion")) return;
+      numberBars(resultsScreen);
       resultsScreen.classList.add("reveal");
       window.requestAnimationFrame(function () {
         window.requestAnimationFrame(function () { resultsScreen.classList.add("is-visible"); });
