@@ -417,7 +417,7 @@ main:focus { outline: none; }
   margin-bottom: 28px;
 }
 
-.author-card {
+.team-card {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--radius);
@@ -425,7 +425,7 @@ main:focus { outline: none; }
   max-width: 560px;
 }
 
-.author-label {
+.team-label {
   margin: 0 0 8px;
   font-family: var(--font-head);
   font-weight: 800;
@@ -435,14 +435,14 @@ main:focus { outline: none; }
   letter-spacing: 0.06em;
 }
 
-.author-list {
+.team-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.author-list li { padding: 3px 0; }
-.author-list strong { color: #fff; }
+.team-list li { padding: 3px 0; }
+.team-list strong { color: #fff; }
 
 /* ---------- Cuerpo y tarjetas ---------- */
 .page-body {
@@ -1640,6 +1640,8 @@ main:focus { outline: none; }
   font: inherit;
 }
 
+/* :focus-within cubre también el ícono de calendario interno del campo de fecha */
+.field:focus-within input,
 .field input:focus,
 .field input:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 
@@ -2051,3 +2053,44 @@ main:focus { outline: none; }
 
 /* En modo oscuro las fotos se atenúan un poco para no deslumbrar */
 :root[data-theme="dark"] .photo img { filter: brightness(0.9); }
+
+/* ==========================================================
+   EQUIPO: tarjeta de portada y línea de autoría por sección
+   ========================================================== */
+.byline {
+  margin: -0.2em 0 1.2em;
+  font-size: 1rem;
+  color: #E7EDF5;
+}
+
+.byline strong { color: #FFFFFF; }
+
+.hero h1 + .byline:last-child { margin-bottom: 0; }
+
+.team-members { padding-top: 6px; }
+
+.member-list {
+  list-style: none;
+  margin: 6px 0 8px;
+  padding: 0;
+}
+
+.member-list li {
+  padding: 6px 0 6px 12px;
+  border-left: 3px solid rgba(242, 169, 0, 0.6);
+}
+
+.member-list li + li { margin-top: 4px; }
+
+.member-name {
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.member-sec { color: #E7EDF5; }
+
+/* En celular, el nombre y la sección van en renglones separados */
+@media (max-width: 599px) {
+  .member-name,
+  .member-sec { display: block; }
+}
