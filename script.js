@@ -29,8 +29,7 @@
 
   /* ---------- Animaciones: solo si el sistema no pide reducir movimiento ---------- */
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  // Rediseño: las animaciones quedan apagadas hasta la etapa de movimiento.
-  var MOTION_ENABLED = false;
+  var MOTION_ENABLED = true;
   var canAnimate = MOTION_ENABLED && !reduceMotion && "IntersectionObserver" in window;
   if (canAnimate) root.classList.add("js-motion");
 
@@ -73,22 +72,107 @@
     });
   }
 
-  function initReveal() {
+  /* ---------- Movimiento con GSAP + ScrollTrigger ----------
+     Todo parte del estado final del HTML: si GSAP no carga, si hay un error
+     o si el sistema pide reducir movimiento, no se oculta nada. */
+  var EASE_OUT = "power4.out"; // salida fuerte, cercana a cubic-bezier(0.23, 1, 0.32, 1)
+
+  function initMotion() {
     if (!canAnimate) return;
-    var targets = document.querySelectorAll(".band, .pager");
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
+    var gsap = window.gsap;
+    var ScrollTrigger = window.ScrollTrigger;
+    if (!gsap || !ScrollTrigger) {
+      root.classList.remove("js-motion");
+      return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+    var mm = gsap.matchMedia();
+
+    mm.add("(prefers-reduced-motion: no-preference)", function () {
+      heroMotion(gsap);
+      structureMotion(gsap);
+      photoParallax(gsap);
+    });
+
+    // Títulos fijos de sección: solo donde están fijos (desde 1100 px)
+    mm.add("(min-width: 1100px) and (prefers-reduced-motion: no-preference)", function () {
+      gsap.utils.toArray(".band-head h2").forEach(function (h2) {
+        gsap.from(h2, {
+          opacity: 0, y: 16, duration: 0.4, ease: EASE_OUT,
+          scrollTrigger: { trigger: h2.closest(".band"), start: "top 75%", once: true }
+        });
+      });
+    });
+
+    // Si se cambia a reducir movimiento a mitad de la visita, todo vuelve a su estado final
+    mm.add("(prefers-reduced-motion: reduce)", function () {
+      root.classList.remove("js-motion");
+    });
+  }
+
+  // Portada: entrada escalonada (< 700 ms en total) y parallax de la foto
+  function heroMotion(gsap) {
+    var hero = document.querySelector(".hero.has-bg");
+    if (!hero) return;
+    var items = hero.querySelectorAll(".hero-anim");
+    // 4 elementos: 0.38 s cada uno + 3 × 0.08 s de escalonado = 0.62 s
+    gsap.fromTo(items, { opacity: 0, y: 16 }, {
+      opacity: 1, y: 0, duration: 0.38, stagger: 0.08, ease: EASE_OUT,
+      clearProps: "transform"
+    });
+
+    var img = hero.querySelector(".hero-bg img");
+    if (img) {
+      // La foto avanza un 15 % más lenta que el scroll
+      gsap.to(img, {
+        y: function () { return hero.offsetHeight * 0.15; },
+        ease: "none",
+        scrollTrigger: {
+          trigger: hero,
+          start: function () { return "top " + hero.getBoundingClientRect().top; },
+          end: "bottom top",
+          scrub: true,
+          invalidateOnRefresh: true
         }
       });
-    }, { rootMargin: "0px 0px -40px 0px", threshold: 0.05 });
+    }
+  }
 
-    Array.prototype.forEach.call(targets, function (el) {
-      numberBars(el);
-      el.classList.add("reveal");
-      observer.observe(el);
+  // Conoce el examen: la infografía se arma con el scroll (scrub), sin fijar la página
+  function structureMotion(gsap) {
+    var box = document.querySelector(".v-structure");
+    if (!box) return;
+    var sessions = box.querySelectorAll(".session");
+    var counterEl = box.querySelector(".structure-total .big");
+    if (sessions.length < 2 || !counterEl) return;
+    var finalValue = parseInt(counterEl.textContent, 10) || 150;
+    var count = { v: 0 };
+
+    var tl = gsap.timeline({
+      defaults: { ease: "power2.out" },
+      scrollTrigger: { trigger: box, start: "top 85%", end: "bottom 60%", scrub: 0.5 }
+    });
+    tl.from(sessions[0], { opacity: 0, y: 24, duration: 1 })
+      .from(sessions[0].querySelectorAll(".seg"), { opacity: 0, y: 10, duration: 0.6, stagger: 0.25 })
+      .from(sessions[1], { opacity: 0, y: 24, duration: 1 })
+      .from(sessions[1].querySelectorAll(".seg"), { opacity: 0, y: 10, duration: 0.6, stagger: 0.25 })
+      .from(sessions[1].querySelectorAll(".legend li"), { opacity: 0, y: 8, duration: 0.5, stagger: 0.15 }, "<")
+      .from(box.querySelector(".structure-total"), { opacity: 0, y: 16, duration: 1 })
+      .fromTo(count, { v: 0 }, {
+        v: finalValue, duration: 1, ease: "none",
+        onUpdate: function () { counterEl.textContent = String(Math.round(count.v)); }
+      }, "<");
+    // Al llegar al final del recorrido, el número queda exacto
+    tl.eventCallback("onComplete", function () { counterEl.textContent = String(finalValue); });
+  }
+
+  // Fotos de guía y recomendaciones: parallax ligero dentro de su marco
+  function photoParallax(gsap) {
+    gsap.utils.toArray(".band .photo-frame img").forEach(function (img) {
+      gsap.fromTo(img, { yPercent: 0 }, {
+        yPercent: -8, ease: "none",
+        scrollTrigger: { trigger: img.parentNode, start: "top bottom", end: "bottom top", scrub: true }
+      });
     });
   }
 
@@ -98,7 +182,7 @@
     try {
       fn();
     } catch (e) {
-      if (fn === initReveal) root.classList.remove("js-motion");
+      if (fn === initMotion) root.classList.remove("js-motion");
       if (window.console) window.console.error(e);
     }
   }
@@ -839,6 +923,6 @@
     safe(function () {
       Array.prototype.forEach.call(document.querySelectorAll("[data-checklist]"), initChecklist);
     });
-    safe(initReveal);
+    safe(initMotion);
   });
 })();

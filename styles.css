@@ -2206,7 +2206,16 @@ main:focus { outline: none; }
   letter-spacing: -0.03em;
   max-width: 16ch;
 }
-.hero-full h1::after { width: 96px; height: 6px; margin-top: 24px; }
+.hero-full h1 { margin-bottom: 0; }
+.hero-full h1::after { display: none; }
+/* La línea ámbar es un elemento propio para poder animarla por separado */
+.hero-rule {
+  display: block;
+  width: 96px; height: 6px;
+  margin: 24px 0 16px;
+  border-radius: 3px;
+  background: var(--amber);
+}
 .hero-full .byline { margin-bottom: 0; }
 .hero-full .hero-subtitle {
   margin: 16px 0 0;
@@ -2230,13 +2239,15 @@ main:focus { outline: none; }
   display: block;
   object-fit: cover;
   object-position: 45% 68%;   /* mano, lápiz y hoja */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 36%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 36%);
 }
 .hero-bg::after {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to right, #081426 0%, #081426 20%, rgba(8, 20, 38, 0.62) 32%, rgba(8, 20, 38, 0.42) 48%, rgba(8, 20, 38, 0) 74%),
+    linear-gradient(to right, rgba(8, 20, 38, 0.45) 0%, rgba(8, 20, 38, 0.3) 30%, rgba(8, 20, 38, 0.16) 46%, rgba(8, 20, 38, 0) 62%),
     linear-gradient(to top, rgba(8, 20, 38, 0.9) 0%, rgba(8, 20, 38, 0) 34%);
 }
 .has-bg .hero-inner h1 { max-width: 9ch; }
@@ -2263,9 +2274,9 @@ main:focus { outline: none; }
     height: clamp(150px, 26vh, 280px);
     margin-bottom: 16px;
   }
-  .has-bg .hero-inner h1::after { margin-top: 16px; }
+  .has-bg .hero-rule { margin: 16px 0 12px; }
   .has-bg .hero-credit { margin-top: 14px; }
-  .hero-bg img { width: 100%; object-position: 50% 70%; }
+  .hero-bg img { width: 100%; object-position: 50% 70%; -webkit-mask-image: none; mask-image: none; }
   .hero-bg::after { background: linear-gradient(to top, #081426 0%, rgba(8, 20, 38, 0) 30%); }
   .has-bg .hero-inner h1 { max-width: 16ch; }
 }
@@ -2349,3 +2360,22 @@ main:focus { outline: none; }
 .band .visual:first-child { margin-top: 0; }
 
 .pager.container-wide { margin-top: clamp(40px, 6vw, 64px); }
+
+/* ==========================================================
+   MOVIMIENTO (GSAP + ScrollTrigger)
+   Solo existe si script.js añadió .js-motion y GSAP cargó; si no, todo
+   se ve en su estado final. Solo transform y opacity.
+   ========================================================== */
+/* Portada: estado inicial de la entrada, para que no parpadee antes de animar */
+.js-motion .has-bg .hero-anim { opacity: 0; }
+
+/* Fotos de guía y recomendaciones: marco que recorta un 8% para el parallax,
+   sin escalar la imagen. Sin animación, la foto queda alineada arriba. */
+.photo .photo-frame {
+  overflow: hidden;
+  aspect-ratio: 3 / 1.84;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--navy-soft);
+}
+.photo .photo-frame img { border: 0; border-radius: 0; }
