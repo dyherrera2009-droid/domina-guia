@@ -989,6 +989,7 @@
         list.appendChild(li);
       });
 
+      Array.prototype.forEach.call(result.querySelectorAll("li"), function (li, i) { li.style.setProperty("--i", i); });
       result.hidden = false;
       result.focus();
     });
@@ -1108,6 +1109,7 @@
         list.appendChild(card(null, night, night, texto("noche").innerHTML, true));
       }
 
+      Array.prototype.forEach.call(result.querySelectorAll("li"), function (li, i) { li.style.setProperty("--i", i); });
       result.hidden = false;
       result.focus();
     });

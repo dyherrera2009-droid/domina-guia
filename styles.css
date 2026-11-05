@@ -2631,3 +2631,52 @@ html.lenis body { height: auto; }
   .gloss-card { display: none !important; }
 }
 
+
+/* ==========================================================
+   PRUEBA DE DISEÑO · Animaciones de respuesta
+   Solo con .js-motion (sin movimiento reducido). Entradas con
+   @starting-style: si el navegador no lo soporta, el contenido
+   aparece directo. Solo transform y opacity.
+   ========================================================== */
+/* Reactivos: presión al elegir y explicación que entra en vez de aparecer de golpe */
+.js-motion .quiz-option { transition: transform 160ms var(--ease-out), border-color 0.15s, background-color 0.15s; }
+.js-motion .quiz-option:active:not(:disabled) { transform: scale(0.98); }
+.js-motion .quiz-feedback-body:not([hidden]) {
+  transition: opacity 240ms var(--ease-out), transform 240ms var(--ease-out);
+}
+@starting-style {
+  .js-motion .quiz-feedback-body:not([hidden]) { opacity: 0; transform: translateY(8px); }
+}
+
+/* Autodiagnóstico y planificador: el resultado entra escalonado */
+.js-motion .diag-list > li,
+.js-motion .plan-list > li {
+  transition: opacity 320ms var(--ease-out), transform 320ms var(--ease-out);
+  transition-delay: calc(min(var(--i, 0), 8) * 50ms);
+}
+@starting-style {
+  .js-motion .diag-list > li,
+.js-motion .plan-list > li { opacity: 0; transform: translateY(12px); }
+}
+
+/* Checklist: la palomita aparece con un pequeño pulso */
+.js-motion .check-box { transition: background-color 150ms ease, transform 200ms var(--ease-out); }
+.js-motion .checklist input:checked + label .check-box { animation: check-pop 260ms var(--ease-out); }
+@keyframes check-pop {
+  0% { transform: scale(0.8); }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Tarjeta del glosario: crece desde su esquina en vez de aparecer de golpe */
+.js-motion .gloss-card:not([hidden]) {
+  transform-origin: 0 0;
+  transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+@starting-style {
+  .js-motion .gloss-card:not([hidden]) { opacity: 0; transform: scale(0.96) translateY(-4px); }
+}
+
+/* Botones de navegación entre páginas: presión al hacer clic */
+.js-motion .pager-link { transition: border-color 0.15s, transform 160ms var(--ease-out); }
+.js-motion .pager-link:active { transform: scale(0.98); }
