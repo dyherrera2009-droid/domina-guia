@@ -1,0 +1,14 @@
+const fs=require('fs');const md=fs.readFileSync('mejoras.md','utf8');
+const html=fs.readFileSync('guia.html','utf8').replace(/<span lang="en">|<\/span>/g,'').replace(/<[^>]+>/g,' ').replace(/&quot;/g,'"').replace(/&amp;/g,'&').replace(/\s+/g,' ');
+const want=[];const q=s=>[...s.matchAll(/"([^"]+)"/g)].map(m=>m[1]);
+const m1=md.split('## MEJORA 1')[1].split('## MEJORA 2')[0],m2=md.split('## MEJORA 2')[1].split('## MEJORA 3')[0],m3=md.split('## MEJORA 3')[1].split('## MEJORA 4')[0];
+m1.split('\n').forEach(l=>{l=l.trim();let m;if(m=l.match(/^Título: (.*)/))want.push(m[1]);else if(m=l.match(/^Botón: (.*)/))want.push(m[1]);else if(m=l.match(/^- Nivel \d: "(.*)"$/))want.push(m[1]);else if(m=l.match(/^Debajo del resultado: "(.*)"$/))want.push(m[1]);else if(m=l.match(/^\d\. (.*)/))want.push(m[1]);else if(m=l.match(/^\d = (.*)/))want.push(m[1]);});
+want.push(m1.split('Texto introductorio:\n')[1].split('\n')[0],'Califica las 8 áreas para ver tu diagnóstico');
+want.push('Arma tu plan con fechas','Escribe la fecha de tu examen y el plan de 4 semanas se acomoda a tu calendario.','Fecha de la Sesión 1 del examen','Generar mi plan');
+q(m2).filter(s=>!/lunes 2 de noviembre/.test(s)).forEach(s=>want.push(s));
+m2.split('\n').forEach(l=>{const m=l.match(/^- Etapa \d: (.*)/);if(m)want.push(m[1]);});
+want.push('Simulacro cronometrado','Empezar simulacro','Marcar para revisar','Terminar simulacro','Reiniciar simulacro','Quedan 5 minutos','Tienes X reactivos sin responder. ¿Quieres terminar?','Tiempo total: 38 minutos con 34 segundos','Reactivos de práctica elaborados para esta guía con el formato del examen. No son reactivos oficiales del Ceneval.');
+want.push(m3.split('Texto introductorio:\n')[1].split('\n')[0].replace('y 2 minutos con 34','y unos 2 minutos con 34'));
+m3.split('\n').forEach(l=>{l=l.trim();let m;if(m=l.match(/^- \d+ a \d+ %: "(.*)"$/))want.push(m[1]);else if(m=l.match(/^[ABC]\) (.*)/))want.push(m[1]);else if(m=l.match(/^Explicación: (.*)/))want.push('Explicación: '+m[1]);else if(m=l.match(/^Texto para S\d+ y S\d+: (.*)/))want.push(m[1]);});
+[...m3.matchAll(/^S\d+\. .*\n(.*)\n/gm)].forEach(m=>want.push(m[1]));
+const u=[...new Set(want)];const miss=u.filter(w=>!html.includes(w));console.log('mejoras.md: textos verificados',u.length,'| faltan:',miss.length?miss:0);
