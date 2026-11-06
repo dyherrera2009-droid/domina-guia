@@ -2680,3 +2680,53 @@ html.lenis body { height: auto; }
 /* Botones de navegación entre páginas: presión al hacer clic */
 .js-motion .pager-link { transition: border-color 0.15s, transform 160ms var(--ease-out); }
 .js-motion .pager-link:active { transform: scale(0.98); }
+
+/* ==========================================================
+   PULIDO PROFESIONAL
+   Mismo mundo visual; se ajustan los detalles que delatan una
+   página armada: superficies del navegador, cifras alineadas,
+   barras laterales gruesas y el glifo de estrella.
+   ========================================================== */
+/* Superficies del navegador con la paleta del sitio */
+::selection { background: var(--amber); color: var(--on-amber); }
+html { caret-color: var(--ink); scrollbar-color: var(--border-strong) var(--bg); }
+a { text-decoration-thickness: 1px; }
+@media (hover: hover) and (pointer: fine) {
+  a:hover { text-decoration-thickness: 2px; }
+}
+
+/* Cifras que cambian o se comparan: misma anchura para que no salten */
+.big, .sim-clock-time, .sim-count, .sim-score, .sim-area-val, .check-count,
+.plan-dates, .diag-num, .rb-val, .seg, .structure-total, table td, .opt-letter {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Avisos y tarjetas: borde completo de 1 px en lugar de barra lateral gruesa */
+.notice,
+.structure-total,
+.report-caption,
+.plan-msg,
+.sim-msg { border: 1px solid var(--amber-border); }
+.quiz-stem { border: 1px solid var(--border); }
+.gloss-card { border: 1px solid var(--border-strong); }
+.diag-list li,
+.sim-review li { border: 1px solid var(--border-strong); }
+.diag-list .nivel-1 { border-color: var(--bad); }
+.diag-list .nivel-2 { border-color: var(--amber-border); }
+.diag-list .nivel-3 { border-color: var(--border-strong); }
+.diag-list .nivel-4 { border-color: var(--ok); }
+.sim-review li.is-right { border-color: var(--ok); }
+.sim-review li.is-wrong { border-color: var(--bad); }
+.member-list li,
+.colophon .member-list li { padding-left: 0; border-left: 0; }
+
+/* Grupo resaltado: estrella dibujada en lugar del carácter ★ */
+.group-card.is-highlight .group-name::after {
+  content: "";
+  display: inline-block;
+  width: 0.85em; height: 0.85em;
+  vertical-align: -0.05em;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
