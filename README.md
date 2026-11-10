@@ -19,6 +19,7 @@ Líder del proyecto: Dylan David Herrera Sánchez
 | Brayan Bart Romero Rosas | Recomendaciones previas al examen |
 | Jesús Antonio Tovar Ledesma | Conclusiones |
 | Ángel Ricardo Velázquez Espino | Referencias |
+| Mauricio Rubio Servín | Revisión de la información, sugerencias de diseño y apoyo en Referencias |
 
 ## Créditos de las fotografías
 
